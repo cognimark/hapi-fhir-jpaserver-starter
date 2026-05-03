@@ -66,6 +66,18 @@
                <artifactId>jaxb-runtime</artifactId>
                <version>2.3.8</version>
            </dependency>
+
+           <!-- Override Flyway to a version that supports PostgreSQL 16.x -->
+           <dependency>
+               <groupId>org.flywaydb</groupId>
+               <artifactId>flyway-core</artifactId>
+               <version>11.8.2</version>
+           </dependency>
+           <dependency>
+               <groupId>org.flywaydb</groupId>
+               <artifactId>flyway-database-postgresql</artifactId>
+               <version>11.8.2</version>
+           </dependency>
        </dependencies>
     </dependencyManagement>
 
@@ -85,6 +97,10 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgresql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
         <dependency>
           <groupId>com.microsoft.sqlserver</groupId>
