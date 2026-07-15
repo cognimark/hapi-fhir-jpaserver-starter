@@ -5,9 +5,15 @@ Parameters:
   GitHubOrganization:
     Type: String
     Default: cognimark
+  GitHubOrganizationId:
+    Type: String
+    Default: "179527222"
   GitHubRepository:
     Type: String
     Default: hapi-fhir-jpaserver-starter
+  GitHubRepositoryId:
+    Type: String
+    Default: "1301919009"
   GitHubEnvironment:
     Type: String
     Default: deployment
@@ -31,7 +37,7 @@ Resources:
             Condition:
               StringEquals:
                 token.actions.githubusercontent.com:aud: sts.amazonaws.com
-                token.actions.githubusercontent.com:sub: !Sub repo:${GitHubOrganization}/${GitHubRepository}:environment:${GitHubEnvironment}
+                token.actions.githubusercontent.com:sub: !Sub repo:${GitHubOrganization}@${GitHubOrganizationId}/${GitHubRepository}@${GitHubRepositoryId}:environment:${GitHubEnvironment}
       Policies:
         - PolicyName: PublishHapiImage
           PolicyDocument:
