@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: GitHub OIDC role for publishing Cognimark HAPI images
+
+Parameters:
+  GitHubOrganization:
+    Type: String
+    Default: cognimark
+  GitHubRepository:
+    Type: String
+    Default: hapi-fhir-jpaserver-starter
+  GitHubEnvironment:
+    Type: String
+    Default: deployment
+  EcrRepositoryName:
+    Type: String
+    Default: core-fhir/hapi
+
+Resources:
+  GitHubImagePublishRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: github-hapi-fhir-image-publish
+      MaxSessionDuration: 3600
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+                token.actions.githubusercontent.com:sub: !Sub repo:${GitHubOrganization}/${GitHubRepository}:environment:${GitHubEnvironment}
+      Policies:
+        - PolicyName: PublishHapiImage
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: ecr:GetAuthorizationToken
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - ecr:BatchCheckLayerAvailability
+                  - ecr:BatchGetImage
+                  - ecr:CompleteLayerUpload
+                  - ecr:DescribeImages
+                  - ecr:GetDownloadUrlForLayer
+                  - ecr:InitiateLayerUpload
+                  - ecr:PutImage
+                  - ecr:UploadLayerPart
+                Resource: !Sub arn:${AWS::Partition}:ecr:${AWS::Region}:${AWS::AccountId}:repository/${EcrRepositoryName}
+
+Outputs:
+  RoleArn:
+    Value: !GetAtt GitHubImagePublishRole.Arn
