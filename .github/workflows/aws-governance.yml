@@ -16,7 +16,18 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
+      # Public forks cannot consume actions from Cognimark's private architecture
+      # repository. These files are the exact contract snapshot named below.
       - name: Validate AWS ownership and tags
-        uses: cognimark/architecture/.github/actions/validate-aws-governance@dea609b64f5c14867597c153e0ac9f29941d4cef
-        with:
-          repository: cognimark/hapi-fhir-jpaserver-starter
+        run: |
+          contract=.cognimark/contract/source.json
+          printf '%s  %s\n' \
+            "$(jq -r .validatorSha256 "$contract")" \
+            scripts/validate_aws_governance.py | sha256sum --check --strict -
+          printf '%s  %s\n' \
+            "$(jq -r .schemaSha256 "$contract")" \
+            .cognimark/contract/aws-governance.schema.json | sha256sum --check --strict -
+          python3 scripts/validate_aws_governance.py \
+            --root . \
+            --schema .cognimark/contract/aws-governance.schema.json \
+            --expected-repository cognimark/hapi-fhir-jpaserver-starter
