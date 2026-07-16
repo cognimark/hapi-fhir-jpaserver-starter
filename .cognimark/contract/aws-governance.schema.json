@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cognimark AWS Governance Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "repository", "deployments"],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "repository": {
+      "type": "string",
+      "pattern": "^cognimark/[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "deployments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/deployment"
+      }
+    }
+  },
+  "$defs": {
+    "deployment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "system",
+        "component",
+        "managedBy",
+        "dataClassification",
+        "sources"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "system": {
+          "type": "string",
+          "enum": ["platform", "identity", "core", "tool", "agent", "flow", "kg"]
+        },
+        "component": {
+          "type": "string",
+          "enum": [
+            "api",
+            "web",
+            "worker",
+            "workflow",
+            "broker",
+            "clients",
+            "jwks",
+            "fhir",
+            "database",
+            "postgres",
+            "cache",
+            "data",
+            "logs",
+            "audit",
+            "deploy",
+            "ci",
+            "network",
+            "security",
+            "governance",
+            "vendors",
+            "users",
+            "admin",
+            "graph"
+          ]
+        },
+        "managedBy": {
+          "type": "string",
+          "enum": ["cloudformation", "copilot", "cdk", "application", "aws", "manual"]
+        },
+        "dataClassification": {
+          "type": "string",
+          "enum": ["public", "internal", "confidential", "phi"]
+        },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    }
+  }
+}
