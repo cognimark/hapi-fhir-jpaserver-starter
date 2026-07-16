@@ -1,0 +1,22 @@
+name: Validate AWS governance
+
+on:
+  pull_request:
+  push:
+    branches:
+      - "cognimark/**"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Validate AWS ownership and tags
+        uses: cognimark/architecture/.github/actions/validate-aws-governance@dea609b64f5c14867597c153e0ac9f29941d4cef
+        with:
+          repository: cognimark/hapi-fhir-jpaserver-starter

@@ -53,6 +53,17 @@ jobs:
         id: ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: Apply repository governance tags
+        run: |
+          repository_arn=$(aws ecr describe-repositories \
+            --repository-names "$ECR_REPOSITORY" \
+            --query 'repositories[0].repositoryArn' \
+            --output text)
+          mapfile -t resource_tags < <(python3 scripts/aws-governance-tags.py core-fhir-image --format aws-list)
+          aws ecr tag-resource \
+            --resource-arn "$repository_arn" \
+            --tags "${resource_tags[@]}"
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 

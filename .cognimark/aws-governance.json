@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "repository": "cognimark/hapi-fhir-jpaserver-starter",
+  "deployments": [
+    {
+      "name": "core-fhir-ci",
+      "system": "core",
+      "component": "ci",
+      "managedBy": "cloudformation",
+      "dataClassification": "internal",
+      "sources": ["infra/github-ecr-role.yml"]
+    },
+    {
+      "name": "core-fhir-image",
+      "system": "core",
+      "component": "fhir",
+      "managedBy": "application",
+      "dataClassification": "internal",
+      "sources": [
+        "Dockerfile",
+        ".github/workflows/publish-cognimark-image.yml"
+      ]
+    }
+  ]
+}

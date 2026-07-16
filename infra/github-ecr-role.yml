@@ -27,6 +27,19 @@ Resources:
     Properties:
       RoleName: github-hapi-fhir-image-publish
       MaxSessionDuration: 3600
+      Tags:
+        - Key: cognimark:system
+          Value: core
+        - Key: cognimark:component
+          Value: ci
+        - Key: cognimark:environment
+          Value: production
+        - Key: cognimark:managed-by
+          Value: cloudformation
+        - Key: cognimark:repository
+          Value: cognimark/hapi-fhir-jpaserver-starter
+        - Key: cognimark:data-classification
+          Value: internal
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -55,6 +68,7 @@ Resources:
                   - ecr:GetDownloadUrlForLayer
                   - ecr:InitiateLayerUpload
                   - ecr:PutImage
+                  - ecr:TagResource
                   - ecr:UploadLayerPart
                 Resource: !Sub arn:${AWS::Partition}:ecr:${AWS::Region}:${AWS::AccountId}:repository/${EcrRepositoryName}
 
