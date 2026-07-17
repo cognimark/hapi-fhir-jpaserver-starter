@@ -18,12 +18,12 @@ concurrency:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: core-fhir/hapi
+  ECR_REPOSITORY: core/fhir
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-    environment: deployment
+    environment: main
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -59,7 +59,7 @@ jobs:
             --repository-names "$ECR_REPOSITORY" \
             --query 'repositories[0].repositoryArn' \
             --output text)
-          mapfile -t resource_tags < <(python3 scripts/aws-governance-tags.py core-fhir-image --format aws-list)
+          mapfile -t resource_tags < <(python3 scripts/aws-governance-tags.py core-fhir-ci --format aws-list)
           aws ecr tag-resource \
             --resource-arn "$repository_arn" \
             --tags "${resource_tags[@]}"
