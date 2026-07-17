@@ -8,7 +8,10 @@
       "component": "ci",
       "managedBy": "cloudformation",
       "dataClassification": "internal",
-      "sources": ["infra/github-ecr-role.yml"]
+      "sources": [
+        "infra/core-fhir-ci.yml",
+        "scripts/deploy_core_fhir_ci.sh"
+      ]
     },
     {
       "name": "core-fhir-image",

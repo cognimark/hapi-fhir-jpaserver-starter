@@ -1,31 +1,39 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: GitHub OIDC role for publishing Cognimark HAPI images
-
-Parameters:
-  GitHubOrganization:
-    Type: String
-    Default: cognimark
-  GitHubOrganizationId:
-    Type: String
-    Default: "179527222"
-  GitHubRepository:
-    Type: String
-    Default: hapi-fhir-jpaserver-starter
-  GitHubRepositoryId:
-    Type: String
-    Default: "1301919009"
-  GitHubEnvironment:
-    Type: String
-    Default: deployment
-  EcrRepositoryName:
-    Type: String
-    Default: core-fhir/hapi
+Description: Cognimark Core FHIR image repository and GitHub publishing identity
 
 Resources:
+  FhirImageRepository:
+    Type: AWS::ECR::Repository
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      RepositoryName: core/fhir
+      ImageTagMutability: IMMUTABLE
+      ImageScanningConfiguration:
+        ScanOnPush: true
+      EncryptionConfiguration:
+        EncryptionType: AES256
+      LifecyclePolicy:
+        LifecyclePolicyText: >-
+          {"rules":[{"rulePriority":1,"description":"Keep the five most recent Core FHIR images","selection":{"tagStatus":"any","countType":"imageCountMoreThan","countNumber":5},"action":{"type":"expire"}}]}
+      Tags:
+        - Key: cognimark:system
+          Value: core
+        - Key: cognimark:component
+          Value: fhir
+        - Key: cognimark:environment
+          Value: production
+        - Key: cognimark:managed-by
+          Value: cloudformation
+        - Key: cognimark:repository
+          Value: cognimark/hapi-fhir-jpaserver-starter
+        - Key: cognimark:data-classification
+          Value: internal
+
   GitHubImagePublishRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: github-hapi-fhir-image-publish
+      RoleName: github-core-fhir-publish
       MaxSessionDuration: 3600
       Tags:
         - Key: cognimark:system
@@ -50,9 +58,9 @@ Resources:
             Condition:
               StringEquals:
                 token.actions.githubusercontent.com:aud: sts.amazonaws.com
-                token.actions.githubusercontent.com:sub: !Sub repo:${GitHubOrganization}@${GitHubOrganizationId}/${GitHubRepository}@${GitHubRepositoryId}:environment:${GitHubEnvironment}
+                token.actions.githubusercontent.com:sub: repo:cognimark@179527222/hapi-fhir-jpaserver-starter@1301919009:environment:main
       Policies:
-        - PolicyName: PublishHapiImage
+        - PolicyName: PublishCoreFhirImage
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
@@ -70,8 +78,12 @@ Resources:
                   - ecr:PutImage
                   - ecr:TagResource
                   - ecr:UploadLayerPart
-                Resource: !Sub arn:${AWS::Partition}:ecr:${AWS::Region}:${AWS::AccountId}:repository/${EcrRepositoryName}
+                Resource: !GetAtt FhirImageRepository.Arn
 
 Outputs:
+  RepositoryUri:
+    Description: Canonical Core FHIR image repository URI
+    Value: !GetAtt FhirImageRepository.RepositoryUri
   RoleArn:
+    Description: GitHub OIDC image publishing role ARN
     Value: !GetAtt GitHubImagePublishRole.Arn
