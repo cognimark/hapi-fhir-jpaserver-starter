@@ -73,11 +73,9 @@ Resources:
                   - ecr:BatchGetImage
                   - ecr:CompleteLayerUpload
                   - ecr:DescribeImages
-                  - ecr:DescribeRepositories
                   - ecr:GetDownloadUrlForLayer
                   - ecr:InitiateLayerUpload
                   - ecr:PutImage
-                  - ecr:TagResource
                   - ecr:UploadLayerPart
                 Resource: !GetAtt FhirImageRepository.Arn
 
