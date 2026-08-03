@@ -52,7 +52,6 @@ abstract class BaseBinaryStorageIntegrationTest {
 	protected static final String COMMON_SUBSCRIPTION_WS_DISABLED = "hapi.fhir.subscription.websocket_enabled=false";
 	protected static final String COMMON_BEAN_OVERRIDE_ALLOWED = "spring.main.allow-bean-definition-overriding=true";
 	protected static final String COMMON_CIRCULAR_REFERENCES = "spring.main.allow-circular-references=true";
-	protected static final String COMMON_MCP_DISABLED = "spring.ai.mcp.server.enabled=false";
 	protected static final String CONTENT_TYPE = "application/octet-stream";
 
 	@LocalServerPort
@@ -163,7 +162,6 @@ abstract class BaseBinaryStorageIntegrationTest {
 		BaseBinaryStorageIntegrationTest.COMMON_SUBSCRIPTION_WS_DISABLED,
 		BaseBinaryStorageIntegrationTest.COMMON_BEAN_OVERRIDE_ALLOWED,
 		BaseBinaryStorageIntegrationTest.COMMON_CIRCULAR_REFERENCES,
-		BaseBinaryStorageIntegrationTest.COMMON_MCP_DISABLED,
 		"hapi.fhir.binary_storage_enabled=true",
 		"hapi.fhir.binary_storage_mode=DATABASE"
 	}
@@ -234,7 +232,6 @@ class BinaryStorageDatabaseModeIT extends BaseBinaryStorageIntegrationTest {
 		BaseBinaryStorageIntegrationTest.COMMON_SUBSCRIPTION_WS_DISABLED,
 		BaseBinaryStorageIntegrationTest.COMMON_BEAN_OVERRIDE_ALLOWED,
 		BaseBinaryStorageIntegrationTest.COMMON_CIRCULAR_REFERENCES,
-		BaseBinaryStorageIntegrationTest.COMMON_MCP_DISABLED,
 		"hapi.fhir.binary_storage_enabled=true",
 		"hapi.fhir.binary_storage_mode=FILESYSTEM",
 		"hapi.fhir.binary_storage_filesystem_base_directory=target/test-binary-storage/filesystem-default"
@@ -290,7 +287,6 @@ class BinaryStorageFilesystemDefaultIT extends BaseBinaryStorageIntegrationTest 
 		BaseBinaryStorageIntegrationTest.COMMON_SUBSCRIPTION_WS_DISABLED,
 		BaseBinaryStorageIntegrationTest.COMMON_BEAN_OVERRIDE_ALLOWED,
 		BaseBinaryStorageIntegrationTest.COMMON_CIRCULAR_REFERENCES,
-		BaseBinaryStorageIntegrationTest.COMMON_MCP_DISABLED,
 		"hapi.fhir.binary_storage_enabled=true",
 		"hapi.fhir.binary_storage_mode=FILESYSTEM",
 		"hapi.fhir.binary_storage_filesystem_base_directory=target/test-binary-storage/filesystem-custom",

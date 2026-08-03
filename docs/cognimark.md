@@ -7,24 +7,28 @@ This repository is Cognimark's fork of
 container consumed by `core-stack`; `core-stack` owns the ECS services and only
 references the published ECR image.
 
-The production customization branch is:
+The versioned customization branch for this source tree is:
 
 ```text
-cognimark/8.4.0-aurora-pg16
+cognimark/8.10.0-aurora-pg16
 ```
 
-It is based on upstream commit `9512ce1ddffca4f9266a9b402348ffbab8cec5c2`
-and carries the Aurora PostgreSQL/Flyway patch introduced by commit
-`d2e177f2a028c60bf07f4c2e027edbb6d6a37654`.
+It is based on upstream tag `image/v8.10.0-3` and carries Cognimark's Aurora
+PostgreSQL/Flyway patch. A version branch is not production until its image has
+passed Aurora migration testing and `core-stack` references the promoted image.
 
 ## Customization
 
 The Cognimark patch:
 
-- pins the HAPI FHIR parent to 8.4.0;
-- uses Flyway 11.8.2 with the PostgreSQL database module;
+- pins the HAPI FHIR parent to 8.10.0;
+- uses Flyway 11.20.3 with the PostgreSQL database module;
 - registers an Aurora PostgreSQL database type with Flyway; and
-- includes WAR dependencies on the Spring Boot loader path.
+- includes WAR dependencies on the Spring Boot loader path;
+- removes the upstream MCP server endpoint and dependencies because Cognimark
+  exposes FHIR only through the REST API; and
+- pins compatible security updates for Spring Boot, Jackson, OpenTelemetry,
+  Spring Retry, Jakarta Mail, PostgreSQL JDBC, and Logback.
 
 ## Remotes
 
@@ -47,7 +51,7 @@ The workflow rejects tags that already exist in ECR and publishes only
 `linux/amd64` images to:
 
 ```text
-825765386069.dkr.ecr.us-east-1.amazonaws.com/core-fhir/hapi
+825765386069.dkr.ecr.us-east-1.amazonaws.com/core/fhir
 ```
 
 Never overwrite a deployed tag. Promote an image by updating `core-stack` to
