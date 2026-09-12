@@ -3,25 +3,13 @@
   "repository": "cognimark/hapi-fhir-jpaserver-starter",
   "deployments": [
     {
-      "name": "core-fhir-ci",
+      "name": "core-fhir-retirement-archive",
       "system": "core",
-      "component": "ci",
-      "managedBy": "cloudformation",
-      "dataClassification": "internal",
-      "sources": [
-        "infra/core-fhir-ci.yml",
-        "scripts/deploy_core_fhir_ci.sh"
-      ]
-    },
-    {
-      "name": "core-fhir-image",
-      "system": "core",
-      "component": "fhir",
+      "component": "data",
       "managedBy": "application",
       "dataClassification": "internal",
       "sources": [
-        "Dockerfile",
-        ".github/workflows/publish-cognimark-image.yml"
+        "docs/cognimark.md"
       ]
     }
   ]

@@ -1,58 +1,36 @@
-# Cognimark HAPI FHIR Build
+# Cognimark HAPI retirement
 
-## Ownership
+As of September 12, 2026, Cognimark has removed HAPI serving and switched to
+native EHR acquisition, immutable source storage and its independent KG. This
+repository is historical source, not an active production runtime or fallback.
 
-This repository is Cognimark's fork of
-`hapifhir/hapi-fhir-jpaserver-starter`. It is the source for the HAPI FHIR
-container consumed by `core-stack`; `core-stack` owns the ECS services and only
-references the published ECR image.
+## Publishing retirement
 
-The versioned customization branch for this source tree is:
+The Cognimark image-publishing workflow, `core-fhir-ci` CloudFormation template
+and deployment script are removed. Do not recreate the retired image repository
+or publishing role. Cloud deletion and backup-verification receipts are recorded
+in Core's internal HAPI retirement inventory, not in this public source fork.
 
-```text
-cognimark/8.10.0-aurora-pg16
-```
+Both previously published image versions have been archived to Core's private,
+versioned, encrypted recovery storage. The archive includes all six OCI
+manifests, configuration objects, image layers and attestations. All 74 unique
+blobs (863,306,262 bytes) were read back and checked against their SHA-256
+digests. This is artifact preservation, not an enabled deployment path.
 
-It is based on upstream tag `image/v8.10.0-3` and carries Cognimark's Aurora
-PostgreSQL/Flyway patch. A version branch is not production until its image has
-passed Aurora migration testing and `core-stack` references the promoted image.
+The governance manifest records stewardship of this retirement archive only;
+its bucket and encryption key remain owned by Core. No AWS infrastructure is
+declared by this repository. Upstream Java sources, Docker/Helm examples and
+Git history remain available for historical inspection.
 
-## Customization
+## Historical customization
 
-The Cognimark patch:
+The `cognimark/8.10.0-aurora-pg16` branch was based on upstream
+`image/v8.10.0-3`. It added Aurora PostgreSQL/Flyway support, packaged WAR
+dependencies on the Spring Boot loader path, removed upstream MCP exposure and
+carried dependency security updates. The earlier 8.4.0 branch remains historical
+source; retaining a branch does not make its deployment instructions current.
 
-- pins the HAPI FHIR parent to 8.10.0;
-- uses Flyway 11.20.3 with the PostgreSQL database module;
-- registers an Aurora PostgreSQL database type with Flyway; and
-- includes WAR dependencies on the Spring Boot loader path;
-- removes the upstream MCP server endpoint and dependencies because Cognimark
-  exposes FHIR only through the REST API; and
-- pins compatible security updates for Spring Boot, Jackson, OpenTelemetry,
-  Spring Retry, Jakarta Mail, PostgreSQL JDBC, and Logback.
-
-## Remotes
-
-Local clones use `origin` for the Cognimark fork and `upstream` for the HAPI
-project:
-
-```text
-origin    https://github.com/cognimark/hapi-fhir-jpaserver-starter.git
-upstream  https://github.com/hapifhir/hapi-fhir-jpaserver-starter.git
-```
-
-Do not merge `upstream/master` into the production branch. HAPI upgrades must
-use a new version branch and pass Aurora PostgreSQL migration testing before
-`core-stack` changes its image reference.
-
-## Publishing
-
-Run the `Publish Cognimark HAPI Image` GitHub workflow with a new image tag.
-The workflow rejects tags that already exist in ECR and publishes only
-`linux/amd64` images to:
-
-```text
-825765386069.dkr.ecr.us-east-1.amazonaws.com/core/fhir
-```
-
-Never overwrite a deployed tag. Promote an image by updating `core-stack` to
-an immutable tag or image digest after validation.
+Restoring an archived image would require a separately approved recovery plan
+and new infrastructure. Historical clinical databases and original source
+records are governed by Core's data-retention process; this retirement does
+not authorize deleting them.

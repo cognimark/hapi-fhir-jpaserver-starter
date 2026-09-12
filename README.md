@@ -1,9 +1,9 @@
 # HAPI-FHIR Starter Project
 
-> **Cognimark production fork:** production customizations live on
-> `cognimark/8.4.0-aurora-pg16`. See
-> [docs/cognimark.md](docs/cognimark.md) before updating dependencies or
-> publishing an image.
+> **Retired Cognimark runtime:** this fork is retained as historical source.
+> Cognimark no longer serves data through HAPI. Its AWS publishing/deployment
+> entrypoints are removed; see [the retirement record](docs/cognimark.md).
+> The upstream project documentation below is not a Cognimark deployment guide.
 
 This project is a complete starter project you can use to deploy a FHIR server using HAPI FHIR JPA.
 
