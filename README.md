@@ -1,5 +1,10 @@
 # HAPI-FHIR Starter Project
 
+> **Cognimark 8.12 development branch:** this branch reuses the existing starter
+> fork for the current shared source runtime. See [the fork contract](docs/cognimark.md).
+> Historical 8.4/8.10 Aurora branches are not its deployment instructions.
+> The customized runtime is not yet qualified or deployed.
+
 This project is a complete starter project you can use to deploy a FHIR server using HAPI FHIR JPA.
 
 Note that this project is specifically intended for end users of the HAPI FHIR JPA server module (in other words, it helps you implement HAPI FHIR, it is not the source of the library itself). If you are looking for the main HAPI FHIR project, see here: https://github.com/hapifhir/hapi-fhir
