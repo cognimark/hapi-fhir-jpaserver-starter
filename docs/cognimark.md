@@ -66,6 +66,10 @@ under `tests/shared/lib/fhir/test_hapi_batch_recovery_pg.py` and the TLS/populat
 upgrade test `tests/test_hapi_tls_runtime_docker.py`. Run the latter with
 `CORE_TEST_HAPI_TLS_DOCKER=1` and an exact `CORE_TEST_HAPI_LONG_ID_IMAGE` digest.
 Fixtures contain only synthetic data and remove their owned containers/volumes.
+The packaged-contract and upstream HTTP smoke workflows share the same pinned
+source dependency build. Custom artifacts are not expected in Maven Central.
+The upstream Docker Hub publishing job is restricted to the official repository;
+this fork does not publish under `hapiproject/hapi` or re-enable historical AWS roles.
 
 The populated official 8.12.0-to-fork upgrade test passed in 146.60 seconds using
 the packaged amd64 runtime, production-shaped TLS and explicit Core-owned DDL.

@@ -17,6 +17,8 @@ env:
 jobs:
   build:
     name: Build
+    # This upstream publishing job must never push a Cognimark fork to hapiproject.
+    if: github.repository == 'hapifhir/hapi-fhir-jpaserver-starter'
     runs-on: ubuntu-24.04
     steps:
       - name: Container meta for default (distroless) image
