@@ -67,8 +67,14 @@ upgrade test `tests/test_hapi_tls_runtime_docker.py`. Run the latter with
 `CORE_TEST_HAPI_TLS_DOCKER=1` and an exact `CORE_TEST_HAPI_LONG_ID_IMAGE` digest.
 Fixtures contain only synthetic data and remove their owned containers/volumes.
 
-ARM64 qualification, explicit populated-database upgrade/restart verification
-and real Epic/OCHIN-NP readback remain release gates. Do not change the production
-image or activate patient refresh just because the local build succeeds.
+The populated official 8.12.0-to-fork upgrade test passed in 146.60 seconds using
+the packaged amd64 runtime, production-shaped TLS and explicit Core-owned DDL.
+It preserved old exact versions, rejected incorrect schemas atomically, safely
+replayed migration, wrote/referenced IDs through 512 characters and restarted
+HAPI/PostgreSQL with Hibernate schema validation rather than automatic DDL.
+
+ARM64 qualification and real Epic/OCHIN-NP readback remain release gates. Do not
+change the production image or activate patient refresh just because the local
+build succeeds.
 
 This implementation, its tests and documentation were prepared with Codex assistance.
