@@ -24,5 +24,7 @@ jobs:
       - uses: ./.github/actions/cognimark-storage
       - name: Verify the application dependency contract and package the WAR
         env:
-          MAVEN_OPTS: -Xmx2g
+          # Bound compression parallelism on high-core hosted runners while
+          # leaving enough heap for the complete HAPI dependency overlay.
+          MAVEN_OPTS: -Xmx4g -XX:ActiveProcessorCount=2
         run: mvn -B -ntp -Dtest=CognimarkStorageContractTest -DskipITs -Pboot package
