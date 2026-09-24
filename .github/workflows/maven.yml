@@ -17,6 +17,7 @@ on:
 jobs:
   build:
 
+    if: github.repository == 'hapifhir/hapi-fhir-jpaserver-starter'
     runs-on: ubuntu-latest
 
     steps:

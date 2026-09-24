@@ -5,7 +5,8 @@
 
     <properties>
         <java.version>17</java.version>
-        <hapi.fhir.jpa.server.starter.revision>1</hapi.fhir.jpa.server.starter.revision>
+        <cognimark.hapi.storage.version>8.12.1-cognimark.1</cognimark.hapi.storage.version>
+        <hapi.fhir.jpa.server.starter.revision>cognimark.1</hapi.fhir.jpa.server.starter.revision>
         <clinical-reasoning.version>4.9.0</clinical-reasoning.version>
 
         <!-- Plugins Versions -->
@@ -35,7 +36,7 @@
     <parent>
         <groupId>ca.uhn.hapi.fhir</groupId>
         <artifactId>hapi-fhir</artifactId>
-        <version>8.12.0</version>
+        <version>8.12.1</version>
     </parent>
 
     <artifactId>hapi-fhir-jpaserver-starter</artifactId>
@@ -60,6 +61,18 @@
 
     <dependencyManagement>
        <dependencies>
+
+            <!-- Select the forked storage artifacts throughout the dependency graph. -->
+            <dependency>
+                <groupId>ca.uhn.hapi.fhir</groupId>
+                <artifactId>hapi-fhir-jpaserver-model</artifactId>
+                <version>${cognimark.hapi.storage.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ca.uhn.hapi.fhir</groupId>
+                <artifactId>hapi-fhir-storage</artifactId>
+                <version>${cognimark.hapi.storage.version}</version>
+            </dependency>
 
             <dependency>
                <groupId>org.glassfish.jaxb</groupId>

@@ -1,8 +1,8 @@
 # Cognimark shared HAPI runtime
 
-Status, September 24, 2026: the existing starter fork is being reused for the
-approved long-resource-ID implementation. This branch establishes its clean
-8.12 baseline; the customized build and production activation are still pending.
+Status, September 24, 2026: the approved source customization and reproducible
+packaged runtime are implemented and locally tested. Production activation is
+still pending; this branch does not change the deployed service by itself.
 
 ## Source ownership
 
@@ -14,8 +14,20 @@ approved long-resource-ID implementation. This branch establishes its clean
 
 The starter baseline is upstream tag `image/v8.12.0-1`, commit
 `a01027b91ed07f41194524fd0dd59623905cbe2d`. The core library baseline is upstream
-`v8.12.0`, commit `7ab4c7c7c49281496faa1b3c2498a652457669ae`.
-Both forks use the development branch `cognimark/8.12.0-long-resource-ids`.
+`v8.12.1`, commit `c8cc1dbbb2568610b68de626ea00c21080e0b8f8`.
+These are the latest stable releases of the respective official repositories
+verified on September 24, 2026. The starter's HAPI parent/dependencies are
+updated to 8.12.1; it does not retain 8.12.0 libraries as a compatibility fallback.
+Both forks use the development branch `cognimark/8.12.1-long-resource-ids`.
+
+The Dockerfile builds core fork revision
+`58f3e8a121c8cbc2545fafb147dc90114af107b8`. The model and storage modules use
+version `8.12.1-cognimark.1`; all other HAPI libraries use official 8.12.1.
+The starter is also versioned `8.12.1-cognimark.1`, not published under an upstream
+artifact version. Maven dependency management selects the custom modules
+throughout the application dependency graph, and packaging tests reject mixed
+versions or duplicate storage classes. The builder and default runtime base
+images are digest-pinned, and the OpenTelemetry agent download is SHA-256 checked.
 
 The starter must build against an exact qualified core-fork revision. Do not
 use a floating branch at image-build time, duplicate the source patch in Core,
@@ -40,11 +52,23 @@ commit deployment secrets, private source inventories or patient fixtures here.
 
 ## Qualification
 
-Follow the [core-fork release gates](https://github.com/cognimark/hapi-fhir/blob/cognimark/8.12.0-long-resource-ids/cognimark/README.md).
+Follow the [core-fork release gates](https://github.com/cognimark/hapi-fhir/blob/cognimark/8.12.1-long-resource-ids/cognimark/README.md).
 The prior disposable class-overlay experiment is evidence for the design, not
-acceptance of a production artifact. The new packaged runtime needs its own
-tests, populated-database migration/restart checks and real-source verification.
-Do not change the production image or activate patient refresh just because
-this branch exists.
+acceptance of a production artifact. The new source-built amd64 image passed
+21 core-library tests, two starter dependency/column-contract tests, and a Core
+ingest/materialization regression against real disposable PostgreSQL and HAPI:
+1,535 passed, eight unrelated opt-in skips. This includes long-ID transactions,
+reference searches, original-body/version readback and durable recovery.
 
-This fork setup and its documentation were prepared with Codex assistance.
+Reproduce the library/package checks with `.github/workflows/cognimark-runtime.yml`,
+or build the default Docker target. Core owns the actual HTTP/PostgreSQL tests
+under `tests/shared/lib/fhir/test_hapi_batch_recovery_pg.py` and the TLS/populated
+upgrade test `tests/test_hapi_tls_runtime_docker.py`. Run the latter with
+`CORE_TEST_HAPI_TLS_DOCKER=1` and an exact `CORE_TEST_HAPI_LONG_ID_IMAGE` digest.
+Fixtures contain only synthetic data and remove their owned containers/volumes.
+
+ARM64 qualification, explicit populated-database upgrade/restart verification
+and real Epic/OCHIN-NP readback remain release gates. Do not change the production
+image or activate patient refresh just because the local build succeeds.
+
+This implementation, its tests and documentation were prepared with Codex assistance.
