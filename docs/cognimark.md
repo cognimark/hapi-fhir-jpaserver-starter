@@ -77,8 +77,15 @@ It preserved old exact versions, rejected incorrect schemas atomically, safely
 replayed migration, wrote/referenced IDs through 512 characters and restarted
 HAPI/PostgreSQL with Hibernate schema validation rather than automatic DDL.
 
-ARM64 qualification and real Epic/OCHIN-NP readback remain release gates. Do not
-change the production image or activate patient refresh just because the local
-build succeeds.
+The ARM64 image also builds with all 23 library/package checks passing. Running
+the same populated TLS upgrade/restart test under amd64-hosted QEMU passed in
+947.56 seconds after allowing longer local-only emulation budgets. The initial
+five-minute emulated startup attempt timed out and was not counted as a pass.
+Both runs removed their owned test containers and volumes. These timings are
+not native ARM64 performance measurements, and production timeouts are unchanged.
+
+Native ARM64 deployment and real Epic/OCHIN-NP readback remain release gates. Do
+not activate patient refresh or retire retained source evidence just because the
+local architecture qualification succeeds.
 
 This implementation, its tests and documentation were prepared with Codex assistance.
