@@ -3,7 +3,8 @@
 > **Cognimark 8.12 development branch:** this branch reuses the existing starter
 > fork for the current shared source runtime. See [the fork contract](docs/cognimark.md).
 > Historical 8.4/8.10 Aurora branches are not its deployment instructions.
-> The customized runtime is not yet qualified or deployed.
+> Core has deployed the qualified original-ID/XHTML-preserving runtime;
+> product refresh activation is tracked separately in the fork contract.
 
 This project is a complete starter project you can use to deploy a FHIR server using HAPI FHIR JPA.
 

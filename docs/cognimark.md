@@ -1,9 +1,9 @@
 # Cognimark shared HAPI runtime
 
-Status, September 24, 2026: Core has deployed the long-ID source-built ARM64
-runtime after the explicit populated-schema upgrade. Independent source
-readback then exposed an XHTML lexical-preservation gap. The parser build below
-is a candidate, not yet a deployed fix. Product refresh activation remains a
+Status, September 24, 2026: Core has deployed the source-built ARM64
+`cognimark.2` runtime with original long-ID storage and JSON XHTML preservation
+on the existing database. Native runtime acceptance and a separately journaled,
+source-proven narrative correction pass. Product refresh activation remains a
 separate coordinated release; this branch does not deploy infrastructure itself.
 
 ## Source ownership
@@ -94,7 +94,7 @@ readback pass. Real-input qualification and exact-version KG delivery remain
 independent product-activation gates. Environment configuration and private
 acceptance inventories are retained by Core, not this public source repository.
 
-## Narrative preservation candidate
+## Narrative preservation
 
 The `cognimark.2` starter selects the custom base library both directly and
 through dependency management. `CognimarkFhirContextConfigurer` enables its
@@ -105,6 +105,21 @@ See the core fork's narrative contract for scope and historical repair rules.
 
 The base module passes 564 tests, the focused narrative suite passes twelve,
 and the starter's three configuration/dependency checks pass with WAR packaging.
-Persisted HTTP behavior and real-source readback remain separate release gates.
+Including 21 storage checks, both architecture builds pass 600 selected checks.
+The actual PostgreSQL/HAPI TLS upgrade test passes in 157.17 seconds, including
+new conditional versions, unchanged old history, transaction/search serialization
+and restart. Core's full ingest/refresh regression repeats with 1,535 passing
+checks and eight unrelated opt-in skips in 257.27 seconds. Timings are local
+qualification measurements, not production performance promises.
+
+Core deploys the artifact from starter implementation `9c516ff9`, pinned to core
+source `f5bfa7ed14`, by immutable image digest. Native ARM64 acceptance passes
+tenant isolation, conditional conflicts, precision and original XHTML strings.
+An earlier rewritten resource was corrected from retained original evidence by
+a new conditional HAPI version and durable Core intent. Old history, source
+files and original sealed commit manifests were not rewritten. Those original
+manifests do not retroactively become valid inputs for the corrected version;
+current-head qualification and future ordinary acquisitions are distinct.
+Product refresh and graph authority remain separate release gates.
 
 This implementation, its tests and documentation were prepared with Codex assistance.
