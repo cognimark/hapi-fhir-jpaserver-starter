@@ -19,13 +19,15 @@ class CognimarkStorageContractTest {
 
     @Test
     void usesOneQualifiedVersionOfEachStorageLibrary() throws IOException {
-        assertVersion("hapi-fhir-base", "8.12.1");
+        assertVersion("hapi-fhir-base", "8.12.1-cognimark.2");
         assertVersion("hapi-fhir-jpaserver-model", "8.12.1-cognimark.1");
         assertVersion("hapi-fhir-storage", "8.12.1-cognimark.1");
         assertThat(Collections.list(getClass().getClassLoader().getResources(
                 "ca/uhn/fhir/jpa/model/entity/ResourceTable.class"))).hasSize(1);
         assertThat(Collections.list(getClass().getClassLoader().getResources(
                 "ca/uhn/fhir/jpa/dao/BaseStorageDao.class"))).hasSize(1);
+        assertThat(Collections.list(getClass().getClassLoader().getResources(
+                "ca/uhn/fhir/parser/JsonParser.class"))).hasSize(1);
     }
 
     @Test

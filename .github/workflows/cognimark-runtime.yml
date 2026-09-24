@@ -27,4 +27,4 @@ jobs:
           # Bound compression parallelism on high-core hosted runners while
           # leaving enough heap for the complete HAPI dependency overlay.
           MAVEN_OPTS: -Xmx4g -XX:ActiveProcessorCount=2
-        run: mvn -B -ntp -Dtest=CognimarkStorageContractTest -DskipITs -Pboot package
+        run: mvn -B -ntp -Dtest=CognimarkStorageContractTest,CognimarkNarrativeConfigurationTest -DskipITs -Pboot package

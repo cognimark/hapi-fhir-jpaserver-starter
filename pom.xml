@@ -6,7 +6,8 @@
     <properties>
         <java.version>17</java.version>
         <cognimark.hapi.storage.version>8.12.1-cognimark.1</cognimark.hapi.storage.version>
-        <hapi.fhir.jpa.server.starter.revision>cognimark.1</hapi.fhir.jpa.server.starter.revision>
+        <cognimark.hapi.base.version>8.12.1-cognimark.2</cognimark.hapi.base.version>
+        <hapi.fhir.jpa.server.starter.revision>cognimark.2</hapi.fhir.jpa.server.starter.revision>
         <clinical-reasoning.version>4.9.0</clinical-reasoning.version>
 
         <!-- Plugins Versions -->
@@ -60,7 +61,12 @@
     </repositories>
 
     <dependencyManagement>
-       <dependencies>
+        <dependencies>
+            <dependency>
+                <groupId>ca.uhn.hapi.fhir</groupId>
+                <artifactId>hapi-fhir-base</artifactId>
+                <version>${cognimark.hapi.base.version}</version>
+            </dependency>
 
             <!-- Select the forked storage artifacts throughout the dependency graph. -->
             <dependency>
@@ -120,7 +126,7 @@
         <dependency>
             <groupId>ca.uhn.hapi.fhir</groupId>
             <artifactId>hapi-fhir-base</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${cognimark.hapi.base.version}</version>
         </dependency>
         <!-- This dependency includes the EmailSenderImpl we will be using instead of standard javamail.-->
         <dependency>

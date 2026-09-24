@@ -1,8 +1,10 @@
 # Cognimark shared HAPI runtime
 
-Status, September 24, 2026: the approved source customization and reproducible
-packaged runtime are implemented and locally tested. Production activation is
-still pending; this branch does not change the deployed service by itself.
+Status, September 24, 2026: Core has deployed the long-ID source-built ARM64
+runtime after the explicit populated-schema upgrade. Independent source
+readback then exposed an XHTML lexical-preservation gap. The parser build below
+is a candidate, not yet a deployed fix. Product refresh activation remains a
+separate coordinated release; this branch does not deploy infrastructure itself.
 
 ## Source ownership
 
@@ -21,9 +23,10 @@ updated to 8.12.1; it does not retain 8.12.0 libraries as a compatibility fallba
 Both forks use the development branch `cognimark/8.12.1-long-resource-ids`.
 
 The Dockerfile builds core fork revision
-`58f3e8a121c8cbc2545fafb147dc90114af107b8`. The model and storage modules use
-version `8.12.1-cognimark.1`; all other HAPI libraries use official 8.12.1.
-The starter is also versioned `8.12.1-cognimark.1`, not published under an upstream
+`f5bfa7ed14f41743caefe98ec3f5b2181d3d2867`. The model and storage modules use
+version `8.12.1-cognimark.1`, and the base/parser module uses
+`8.12.1-cognimark.2`; other HAPI libraries use official 8.12.1.
+The starter is versioned `8.12.1-cognimark.2`, not published under an upstream
 artifact version. Maven dependency management selects the custom modules
 throughout the application dependency graph, and packaging tests reject mixed
 versions or duplicate storage classes. The builder and default runtime base
@@ -84,8 +87,24 @@ five-minute emulated startup attempt timed out and was not counted as a pass.
 Both runs removed their owned test containers and volumes. These timings are
 not native ARM64 performance measurements, and production timeouts are unchanged.
 
-Native ARM64 deployment and real Epic/OCHIN-NP readback remain release gates. Do
-not activate patient refresh or retire retained source evidence just because the
-local architecture qualification succeeds.
+Core's initial native ARM64 deployment runs the prior `cognimark.1` build against the
+existing database, using schema validation after an explicit, replayable ID-column
+widening. Tenant isolation, conditional conflicts, precision and historical-body
+readback pass. Real-input qualification and exact-version KG delivery remain
+independent product-activation gates. Environment configuration and private
+acceptance inventories are retained by Core, not this public source repository.
+
+## Narrative preservation candidate
+
+The `cognimark.2` starter selects the custom base library both directly and
+through dependency management. `CognimarkFhirContextConfigurer` enables its
+JSON XHTML source-preservation option on each managed context before use.
+The original string is retained only after normal parsing, and only reused
+while the model value remains unmodified. Hash comparisons are not relaxed.
+See the core fork's narrative contract for scope and historical repair rules.
+
+The base module passes 564 tests, the focused narrative suite passes twelve,
+and the starter's three configuration/dependency checks pass with WAR packaging.
+Persisted HTTP behavior and real-source readback remain separate release gates.
 
 This implementation, its tests and documentation were prepared with Codex assistance.
