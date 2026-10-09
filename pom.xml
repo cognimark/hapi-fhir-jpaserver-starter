@@ -6,11 +6,11 @@
     <properties>
         <java.version>17</java.version>
         <cognimark.hapi.model.version>8.12.1-cognimark.1</cognimark.hapi.model.version>
-        <cognimark.hapi.storage.version>8.12.1-cognimark.5</cognimark.hapi.storage.version>
+        <cognimark.hapi.storage.version>8.12.1-cognimark.6</cognimark.hapi.storage.version>
         <cognimark.hapi.base.version>8.12.1-cognimark.2</cognimark.hapi.base.version>
         <cognimark.hapi.batch.version>8.12.1-cognimark.3</cognimark.hapi.batch.version>
-        <cognimark.hapi.persistence.version>8.12.1-cognimark.5</cognimark.hapi.persistence.version>
-        <hapi.fhir.jpa.server.starter.revision>cognimark.5</hapi.fhir.jpa.server.starter.revision>
+        <cognimark.hapi.persistence.version>8.12.1-cognimark.6</cognimark.hapi.persistence.version>
+        <hapi.fhir.jpa.server.starter.revision>cognimark.6</hapi.fhir.jpa.server.starter.revision>
         <clinical-reasoning.version>4.9.0</clinical-reasoning.version>
 
         <!-- Plugins Versions -->

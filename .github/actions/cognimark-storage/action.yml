@@ -6,7 +6,7 @@ runs:
     - uses: actions/checkout@v4
       with:
         repository: cognimark/hapi-fhir
-        ref: f347046694fe950a76b55181ef693927c691e9b9
+        ref: c33060c5a110981b0deba38553a6b4264183c2e5
         path: .cognimark-hapi-core
     - name: Build and test storage contracts
       shell: bash
@@ -17,11 +17,11 @@ runs:
         mvn -B -ntp -f hapi-fhir-base/pom.xml install
         mvn -B -ntp -f cognimark/narrative-tests/pom.xml test
         mvn -B -ntp -f hapi-fhir-jpaserver-model/pom.xml -Dtest=ResourceTableTest install
-        mvn -B -ntp -f hapi-fhir-storage/pom.xml -Dtest=BaseStorageDaoResourceIdTest install
+        mvn -B -ntp -f hapi-fhir-jpaserver-searchparam/pom.xml install
+        mvn -B -ntp -f hapi-fhir-storage/pom.xml -Dtest=BaseStorageDaoResourceIdTest,DaoResourceLinkResolverTest install
         mvn -B -ntp -f hapi-fhir-jpa/pom.xml install
         mvn -B -ntp -f hapi-fhir-storage-batch2/pom.xml install
         mvn -B -ntp -f cognimark/batch2-tests/pom.xml test
-        mvn -B -ntp -f hapi-fhir-jpaserver-searchparam/pom.xml install
         mvn -B -ntp -f hapi-fhir-storage-batch2-jobs/pom.xml install
         mvn -B -ntp -f hapi-fhir-jpaserver-base/pom.xml \
           -Dtest=LocalBatch2WorkRecoveryTest,ReindexPartitionContextTest,JpaJobPersistenceImplTest,ReindexReferencePrefetchTest install

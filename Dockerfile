@@ -12,18 +12,18 @@ RUN curl -fLSsO https://github.com/open-telemetry/opentelemetry-java-instrumenta
 # All non-custom HAPI dependencies are supplied by the official 8.12.1 release.
 RUN git init /tmp/cognimark-hapi-core \
     && git -C /tmp/cognimark-hapi-core remote add origin https://github.com/cognimark/hapi-fhir.git \
-    && git -C /tmp/cognimark-hapi-core fetch --depth 1 --filter=blob:none origin f347046694fe950a76b55181ef693927c691e9b9 \
+    && git -C /tmp/cognimark-hapi-core fetch --depth 1 --filter=blob:none origin c33060c5a110981b0deba38553a6b4264183c2e5 \
     && git -C /tmp/cognimark-hapi-core sparse-checkout set hapi-deployable-pom hapi-fhir-base hapi-fhir-jpaserver-model hapi-fhir-storage hapi-fhir-jpa hapi-fhir-storage-batch2 hapi-fhir-storage-batch2-jobs hapi-fhir-jpaserver-searchparam hapi-fhir-jpaserver-base cognimark/narrative-tests cognimark/batch2-tests cognimark/reindex-tests \
     && git -C /tmp/cognimark-hapi-core checkout --detach FETCH_HEAD \
-    && test "$(git -C /tmp/cognimark-hapi-core rev-parse HEAD)" = f347046694fe950a76b55181ef693927c691e9b9 \
+    && test "$(git -C /tmp/cognimark-hapi-core rev-parse HEAD)" = c33060c5a110981b0deba38553a6b4264183c2e5 \
     && mvn -B -ntp -f /tmp/cognimark-hapi-core/hapi-fhir-base/pom.xml install \
     && mvn -B -ntp -f /tmp/cognimark-hapi-core/cognimark/narrative-tests/pom.xml test \
     && mvn -B -ntp -f /tmp/cognimark-hapi-core/hapi-fhir-jpaserver-model/pom.xml -Dtest=ResourceTableTest install \
-    && mvn -B -ntp -f /tmp/cognimark-hapi-core/hapi-fhir-storage/pom.xml -Dtest=BaseStorageDaoResourceIdTest install \
+    && mvn -B -ntp -f /tmp/cognimark-hapi-core/hapi-fhir-jpaserver-searchparam/pom.xml install \
+    && mvn -B -ntp -f /tmp/cognimark-hapi-core/hapi-fhir-storage/pom.xml -Dtest=BaseStorageDaoResourceIdTest,DaoResourceLinkResolverTest install \
     && mvn -B -ntp -f /tmp/cognimark-hapi-core/hapi-fhir-jpa/pom.xml install \
     && mvn -B -ntp -f /tmp/cognimark-hapi-core/hapi-fhir-storage-batch2/pom.xml install \
     && mvn -B -ntp -f /tmp/cognimark-hapi-core/cognimark/batch2-tests/pom.xml test \
-    && mvn -B -ntp -f /tmp/cognimark-hapi-core/hapi-fhir-jpaserver-searchparam/pom.xml install \
     && mvn -B -ntp -f /tmp/cognimark-hapi-core/hapi-fhir-storage-batch2-jobs/pom.xml install \
     && mvn -B -ntp -f /tmp/cognimark-hapi-core/hapi-fhir-jpaserver-base/pom.xml -Dtest=LocalBatch2WorkRecoveryTest,ReindexPartitionContextTest,JpaJobPersistenceImplTest,ReindexReferencePrefetchTest install \
     && mvn -B -ntp -f /tmp/cognimark-hapi-core/cognimark/reindex-tests/pom.xml test
@@ -61,14 +61,14 @@ COPY --from=build-hapi --chown=65532:65532 /tmp/hapi-fhir-jpaserver-starter/open
 ########### distroless brings focus on security and runs on plain spring boot - this is the default image
 FROM gcr.io/distroless/java21-debian13:nonroot@sha256:0a1f5a75661918de9c0813f287f651c3bf2d6dd752eada5f084eb0c1f14ced9e AS default
 LABEL ai.cognimark.hapi.upstream-version="8.12.1" \
-      ai.cognimark.hapi.core-revision="f347046694fe950a76b55181ef693927c691e9b9" \
+      ai.cognimark.hapi.core-revision="c33060c5a110981b0deba38553a6b4264183c2e5" \
       ai.cognimark.hapi.model-version="8.12.1-cognimark.1" \
-      ai.cognimark.hapi.storage-version="8.12.1-cognimark.5" \
+      ai.cognimark.hapi.storage-version="8.12.1-cognimark.6" \
       ai.cognimark.hapi.parser-version="8.12.1-cognimark.2" \
       ai.cognimark.hapi.batch-version="8.12.1-cognimark.3" \
-      ai.cognimark.hapi.persistence-version="8.12.1-cognimark.5" \
-      ai.cognimark.hapi.searchparam-version="8.12.1-cognimark.5" \
-      ai.cognimark.hapi.jobs-version="8.12.1-cognimark.5" \
+      ai.cognimark.hapi.persistence-version="8.12.1-cognimark.6" \
+      ai.cognimark.hapi.searchparam-version="8.12.1-cognimark.6" \
+      ai.cognimark.hapi.jobs-version="8.12.1-cognimark.6" \
       ai.cognimark.hapi.resource-id-limit="512"
 # 65532 is the nonroot user's uid
 # used here instead of the name to allow Kubernetes to easily detect that the container

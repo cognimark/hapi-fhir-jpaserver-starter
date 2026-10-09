@@ -1,8 +1,8 @@
 # Cognimark shared HAPI runtime
 
 Status, October 9, 2026: Core has deployed the source-built ARM64
-`cognimark.4` runtime, including long-ID storage, JSON XHTML preservation and
-native-work recovery. The `.5` reference-prefetch candidate is in runtime and
+`cognimark.5` runtime, including long-ID storage, JSON XHTML preservation,
+native-work recovery and existing-reference prefetch. The `.6` incoming-reference candidate is in runtime and
 performance qualification. Core owns deployment and full-rebuild acceptance;
 this branch does not deploy infrastructure itself.
 
@@ -23,12 +23,12 @@ updated to 8.12.1; it does not retain 8.12.0 libraries as a compatibility fallba
 Both forks use the development branch `cognimark/8.12.1-long-resource-ids`.
 
 The Dockerfile builds core fork revision
-`f347046694fe950a76b55181ef693927c691e9b9`. The model module uses
+`c33060c5a110981b0deba38553a6b4264183c2e5`. The model module uses
 version `8.12.1-cognimark.1`, and the base/parser module uses
 `8.12.1-cognimark.2`. The scheduler and Batch2 modules use
 `8.12.1-cognimark.3`. Storage, search parameters, Batch2 jobs and the JPA server
-implementation use `8.12.1-cognimark.5`; other HAPI libraries use official 8.12.1.
-The starter candidate is versioned `8.12.1-cognimark.5`, not published under an upstream
+implementation use `8.12.1-cognimark.6`; other HAPI libraries use official 8.12.1.
+The starter candidate is versioned `8.12.1-cognimark.6`, not published under an upstream
 artifact version. Maven dependency management selects the custom modules
 throughout the application dependency graph, and packaging tests reject mixed
 versions or duplicate storage classes. The builder and default runtime base
@@ -192,6 +192,15 @@ batch; the transaction-local map is partition-aware, positive-only and cleared
 on rollback. Ordinary reference validation, placeholder creation, index definitions,
 flush rules and optimistic locking remain enabled. An off-by-one existing-link
 ID comparison is also fixed. There is no new infrastructure, schema or cache service.
+
+The `.6` candidate also batches previously unresolved incoming relative targets
+within each reindex chunk. Parsed bodies are reused once, with version/history
+checks and write invalidation. Target identities are partition-keyed, positive-only,
+invalidated on writes/deletes, and discarded on rollback. Normal link validation
+still runs; missing targets retain native placeholder handling. Existing-link
+matching reuses a lazy per-resource index and the already-prefetched identity map.
+Known targets from that same resource's stored links are not redundantly queried.
+No global cache, new resource-ID mapping, flush-mode or concurrency change is used.
 
 Docker and CI build the full search-parameter and Batch2-job test suites, selected
 JPA/recovery/prefetch tests and the standalone packaged contract. Core must still
