@@ -1,10 +1,10 @@
 # Cognimark shared HAPI runtime
 
-Status, September 24, 2026: Core has deployed the source-built ARM64
-`cognimark.2` runtime with original long-ID storage and JSON XHTML preservation
-on the existing database. Native runtime acceptance and a separately journaled,
-source-proven narrative correction pass. Product refresh activation remains a
-separate coordinated release; this branch does not deploy infrastructure itself.
+Status, October 9, 2026: Core has deployed the source-built ARM64
+`cognimark.4` runtime, including long-ID storage, JSON XHTML preservation and
+native-work recovery. The `.5` reference-prefetch candidate is in runtime and
+performance qualification. Core owns deployment and full-rebuild acceptance;
+this branch does not deploy infrastructure itself.
 
 ## Source ownership
 
@@ -23,12 +23,12 @@ updated to 8.12.1; it does not retain 8.12.0 libraries as a compatibility fallba
 Both forks use the development branch `cognimark/8.12.1-long-resource-ids`.
 
 The Dockerfile builds core fork revision
-`76c0fbf383bf39b75e02537b24d16be4a203b468`. The model and storage modules use
+`f347046694fe950a76b55181ef693927c691e9b9`. The model module uses
 version `8.12.1-cognimark.1`, and the base/parser module uses
 `8.12.1-cognimark.2`. The scheduler and Batch2 modules use
-`8.12.1-cognimark.3`. The JPA server implementation uses
-`8.12.1-cognimark.4`; other HAPI libraries use official 8.12.1.
-The starter candidate is versioned `8.12.1-cognimark.4`, not published under an upstream
+`8.12.1-cognimark.3`. Storage, search parameters, Batch2 jobs and the JPA server
+implementation use `8.12.1-cognimark.5`; other HAPI libraries use official 8.12.1.
+The starter candidate is versioned `8.12.1-cognimark.5`, not published under an upstream
 artifact version. Maven dependency management selects the custom modules
 throughout the application dependency graph, and packaging tests reject mixed
 versions or duplicate storage classes. The builder and default runtime base
@@ -183,3 +183,17 @@ The previous qualified AMD64/ARM64 packages contain the same 358 external librar
 names, sizes and CRCs; custom libraries contain portable Java bytecode.
 Target-architecture JVM/TLS/PostgreSQL qualification remains an independent release gate,
 especially if future dependencies introduce platform-selected native libraries.
+
+## Transaction-local reference prefetch
+
+The `.5` package selects all four changed libraries explicitly and rejects duplicate
+classes. Native reindex preloads existing reference identities once per bounded
+batch; the transaction-local map is partition-aware, positive-only and cleared
+on rollback. Ordinary reference validation, placeholder creation, index definitions,
+flush rules and optimistic locking remain enabled. An off-by-one existing-link
+ID comparison is also fixed. There is no new infrastructure, schema or cache service.
+
+Docker and CI build the full search-parameter and Batch2-job test suites, selected
+JPA/recovery/prefetch tests and the standalone packaged contract. Core must still
+qualify full-WAR HTTP/PostgreSQL behavior, retained history, tenant isolation,
+restart recovery and paired performance before replacing the production image.

@@ -21,10 +21,12 @@ class CognimarkStorageContractTest {
     void usesOneQualifiedVersionOfEachStorageLibrary() throws IOException {
         assertVersion("hapi-fhir-base", "8.12.1-cognimark.2");
         assertVersion("hapi-fhir-jpaserver-model", "8.12.1-cognimark.1");
-        assertVersion("hapi-fhir-storage", "8.12.1-cognimark.1");
+        assertVersion("hapi-fhir-storage", "8.12.1-cognimark.5");
         assertVersion("hapi-fhir-jpa", "8.12.1-cognimark.3");
         assertVersion("hapi-fhir-storage-batch2", "8.12.1-cognimark.3");
-        assertVersion("hapi-fhir-jpaserver-base", "8.12.1-cognimark.4");
+        assertVersion("hapi-fhir-jpaserver-base", "8.12.1-cognimark.5");
+        assertVersion("hapi-fhir-jpaserver-searchparam", "8.12.1-cognimark.5");
+        assertVersion("hapi-fhir-storage-batch2-jobs", "8.12.1-cognimark.5");
         assertThat(Collections.list(getClass().getClassLoader().getResources(
                 "ca/uhn/fhir/jpa/model/entity/ResourceTable.class"))).hasSize(1);
         assertThat(Collections.list(getClass().getClassLoader().getResources(
@@ -37,6 +39,10 @@ class CognimarkStorageContractTest {
                 "ca/uhn/fhir/batch2/maintenance/WorkChunkHeartbeatService.class"))).hasSize(1);
         assertThat(Collections.list(getClass().getClassLoader().getResources(
                 "ca/uhn/fhir/jpa/dao/BaseHapiFhirResourceDao.class"))).hasSize(1);
+        assertThat(Collections.list(getClass().getClassLoader().getResources(
+                "ca/uhn/fhir/jpa/searchparam/extractor/SearchParamExtractorService.class"))).hasSize(1);
+        assertThat(Collections.list(getClass().getClassLoader().getResources(
+                "ca/uhn/fhir/batch2/jobs/bulkmodify/reindex/ReindexV3ModifyResourcesStep.class"))).hasSize(1);
     }
 
     @Test
