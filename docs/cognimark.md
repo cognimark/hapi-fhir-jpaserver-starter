@@ -197,3 +197,10 @@ Docker and CI build the full search-parameter and Batch2-job test suites, select
 JPA/recovery/prefetch tests and the standalone packaged contract. Core must still
 qualify full-WAR HTTP/PostgreSQL behavior, retained history, tenant isolation,
 restart recovery and paired performance before replacing the production image.
+
+The runtime-compatibility CI job uses the same digest-pinned Maven 3.9.12 / Java
+17 container as the Docker builder. It builds the model and storage modules
+individually in the same order, rather than parsing the entire upstream reactor
+under the runner's ambient Maven installation. The initial `.5` remote check
+failed while parsing an upstream duplicate plugin declaration, not in a runtime
+test; the pinned image build and local package/runtime checks had passed.

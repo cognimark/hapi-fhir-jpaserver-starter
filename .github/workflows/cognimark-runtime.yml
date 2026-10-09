@@ -14,13 +14,12 @@ jobs:
   packaged-contract:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    container:
+      image: docker.io/library/maven:3.9.12-eclipse-temurin-17@sha256:a0603aab698040d9c94259f379ec0487da1678560748d6c7508483034033c53d
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-          cache: maven
+      - name: Verify the same toolchain used by the production image build
+        run: mvn --version
       - uses: ./.github/actions/cognimark-storage
       - name: Verify the application dependency contract and package the WAR
         env:
