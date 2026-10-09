@@ -23,11 +23,12 @@ updated to 8.12.1; it does not retain 8.12.0 libraries as a compatibility fallba
 Both forks use the development branch `cognimark/8.12.1-long-resource-ids`.
 
 The Dockerfile builds core fork revision
-`c4515ae394a27208eae451be9b75df1469f85091`. The model and storage modules use
+`76c0fbf383bf39b75e02537b24d16be4a203b468`. The model and storage modules use
 version `8.12.1-cognimark.1`, and the base/parser module uses
 `8.12.1-cognimark.2`. The scheduler and Batch2 modules use
-`8.12.1-cognimark.3`; other HAPI libraries use official 8.12.1.
-The starter is versioned `8.12.1-cognimark.3`, not published under an upstream
+`8.12.1-cognimark.3`. The JPA server implementation uses
+`8.12.1-cognimark.4`; other HAPI libraries use official 8.12.1.
+The starter candidate is versioned `8.12.1-cognimark.4`, not published under an upstream
 artifact version. Maven dependency management selects the custom modules
 throughout the application dependency graph, and packaging tests reject mixed
 versions or duplicate storage classes. The builder and default runtime base
@@ -139,5 +140,37 @@ in-memory triggers and verify that the same durable native reindex jobs resume.
 The Docker and CI builds run the full scheduler/Batch2 module suites plus eight
 real-scheduler contract checks. Packaging checks reject an official/custom
 version mix or duplicate scheduler and heartbeat classes. Core's disposable
-HTTP/PostgreSQL test additionally checks native reindex recovery after restart,
-absence of completed-chunk heartbeats and absence of INFO registration spam.
+HTTP/PostgreSQL test also checks absence of completed-chunk heartbeats and INFO
+registration spam. The original small restart fixture covered a completed
+discovery gate, not loss of an already populated local broker queue.
+
+## Local Batch2 recovery candidate
+
+The `.4` candidate restores dispatchability of lost local notifications through
+the native persistence layer before schedulers start. Enable
+`cognimark.batch2.single-node-local-queue=true` **only** when deployment excludes
+overlapping HAPI processes against the same database. Core enforces a single
+host/task and stop-before-start replacement. The option is off for undeclared
+deployments and rejects a non-local broker; durable brokers own their redelivery.
+No new poller, queue service, job API, schema or clinical rewrite is introduced.
+
+Only unfinished pre-boot chunks in active jobs' current steps return to READY.
+Native maintenance handles bounded dispatch afterward, so startup does not wait
+for space in the 1,000-message executor queue. Completed work, payloads, parameters,
+retry counts, cancelled/failed jobs, later gates and current-boot work are retained.
+Root-context startup runs once; child/repeated refresh events do not replay work.
+The same library revision preserves a resource's partition when reindex creates
+a missing reference target, avoiding unscoped placeholder writes.
+
+The local full-WAR test passes with 1,204 Observations, more than 1,000 queued
+notifications and executing work at shutdown; the original job resumes with zero
+resource failures. A second restart does not replay completed jobs. A historical
+Condition missing its Patient target is repaired in the correct tenant, its
+subject search works, and exact historical resources remain unchanged. These are
+local candidate results, not acceptance of a production deployment.
+
+Maven compilation runs on `BUILDPLATFORM` rather than emulating the target CPU.
+The previous qualified AMD64/ARM64 packages contain the same 358 external library
+names, sizes and CRCs; custom libraries contain portable Java bytecode.
+Target-architecture JVM/TLS/PostgreSQL qualification remains an independent release gate,
+especially if future dependencies introduce platform-selected native libraries.

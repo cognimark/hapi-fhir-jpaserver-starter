@@ -8,7 +8,8 @@
         <cognimark.hapi.storage.version>8.12.1-cognimark.1</cognimark.hapi.storage.version>
         <cognimark.hapi.base.version>8.12.1-cognimark.2</cognimark.hapi.base.version>
         <cognimark.hapi.batch.version>8.12.1-cognimark.3</cognimark.hapi.batch.version>
-        <hapi.fhir.jpa.server.starter.revision>cognimark.3</hapi.fhir.jpa.server.starter.revision>
+        <cognimark.hapi.persistence.version>8.12.1-cognimark.4</cognimark.hapi.persistence.version>
+        <hapi.fhir.jpa.server.starter.revision>cognimark.4</hapi.fhir.jpa.server.starter.revision>
         <clinical-reasoning.version>4.9.0</clinical-reasoning.version>
 
         <!-- Plugins Versions -->
@@ -90,6 +91,11 @@
                 <artifactId>hapi-fhir-storage-batch2</artifactId>
                 <version>${cognimark.hapi.batch.version}</version>
             </dependency>
+            <dependency>
+                <groupId>ca.uhn.hapi.fhir</groupId>
+                <artifactId>hapi-fhir-jpaserver-base</artifactId>
+                <version>${cognimark.hapi.persistence.version}</version>
+            </dependency>
 
             <dependency>
                <groupId>org.glassfish.jaxb</groupId>
@@ -156,7 +162,7 @@
         <dependency>
             <groupId>ca.uhn.hapi.fhir</groupId>
             <artifactId>hapi-fhir-jpaserver-base</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${cognimark.hapi.persistence.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework</groupId>

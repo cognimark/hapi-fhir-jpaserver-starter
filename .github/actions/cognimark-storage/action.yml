@@ -6,7 +6,7 @@ runs:
     - uses: actions/checkout@v4
       with:
         repository: cognimark/hapi-fhir
-        ref: c4515ae394a27208eae451be9b75df1469f85091
+        ref: 76c0fbf383bf39b75e02537b24d16be4a203b468
         path: .cognimark-hapi-core
     - name: Build and test storage contracts
       shell: bash
@@ -22,3 +22,6 @@ runs:
         mvn -B -ntp -f hapi-fhir-jpa/pom.xml install
         mvn -B -ntp -f hapi-fhir-storage-batch2/pom.xml install
         mvn -B -ntp -f cognimark/batch2-tests/pom.xml test
+        mvn -B -ntp -f hapi-fhir-jpaserver-base/pom.xml \
+          -Dtest=LocalBatch2WorkRecoveryTest,ReindexPartitionContextTest,JpaJobPersistenceImplTest install
+        mvn -B -ntp -f cognimark/reindex-tests/pom.xml test

@@ -24,6 +24,7 @@ class CognimarkStorageContractTest {
         assertVersion("hapi-fhir-storage", "8.12.1-cognimark.1");
         assertVersion("hapi-fhir-jpa", "8.12.1-cognimark.3");
         assertVersion("hapi-fhir-storage-batch2", "8.12.1-cognimark.3");
+        assertVersion("hapi-fhir-jpaserver-base", "8.12.1-cognimark.4");
         assertThat(Collections.list(getClass().getClassLoader().getResources(
                 "ca/uhn/fhir/jpa/model/entity/ResourceTable.class"))).hasSize(1);
         assertThat(Collections.list(getClass().getClassLoader().getResources(
@@ -34,6 +35,8 @@ class CognimarkStorageContractTest {
                 "ca/uhn/fhir/jpa/sched/BaseSchedulerServiceImpl.class"))).hasSize(1);
         assertThat(Collections.list(getClass().getClassLoader().getResources(
                 "ca/uhn/fhir/batch2/maintenance/WorkChunkHeartbeatService.class"))).hasSize(1);
+        assertThat(Collections.list(getClass().getClassLoader().getResources(
+                "ca/uhn/fhir/jpa/dao/BaseHapiFhirResourceDao.class"))).hasSize(1);
     }
 
     @Test
