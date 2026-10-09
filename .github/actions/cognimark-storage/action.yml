@@ -1,4 +1,4 @@
-name: Build the pinned Cognimark parser and storage libraries
+name: Build the pinned Cognimark HAPI libraries
 description: Install the exact source-built HAPI dependencies before building the starter.
 runs:
   using: composite
@@ -6,7 +6,7 @@ runs:
     - uses: actions/checkout@v4
       with:
         repository: cognimark/hapi-fhir
-        ref: f5bfa7ed14f41743caefe98ec3f5b2181d3d2867
+        ref: c4515ae394a27208eae451be9b75df1469f85091
         path: .cognimark-hapi-core
     - name: Build and test storage contracts
       shell: bash
@@ -19,3 +19,6 @@ runs:
         mvn -B -ntp -pl hapi-fhir-jpaserver-model,hapi-fhir-storage \
           -Dtest=ResourceTableTest,BaseStorageDaoResourceIdTest \
           -Dsurefire.failIfNoSpecifiedTests=false install
+        mvn -B -ntp -f hapi-fhir-jpa/pom.xml install
+        mvn -B -ntp -f hapi-fhir-storage-batch2/pom.xml install
+        mvn -B -ntp -f cognimark/batch2-tests/pom.xml test

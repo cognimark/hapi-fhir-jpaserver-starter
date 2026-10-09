@@ -23,10 +23,11 @@ updated to 8.12.1; it does not retain 8.12.0 libraries as a compatibility fallba
 Both forks use the development branch `cognimark/8.12.1-long-resource-ids`.
 
 The Dockerfile builds core fork revision
-`f5bfa7ed14f41743caefe98ec3f5b2181d3d2867`. The model and storage modules use
+`c4515ae394a27208eae451be9b75df1469f85091`. The model and storage modules use
 version `8.12.1-cognimark.1`, and the base/parser module uses
-`8.12.1-cognimark.2`; other HAPI libraries use official 8.12.1.
-The starter is versioned `8.12.1-cognimark.2`, not published under an upstream
+`8.12.1-cognimark.2`. The scheduler and Batch2 modules use
+`8.12.1-cognimark.3`; other HAPI libraries use official 8.12.1.
+The starter is versioned `8.12.1-cognimark.3`, not published under an upstream
 artifact version. Maven dependency management selects the custom modules
 throughout the application dependency graph, and packaging tests reject mixed
 versions or duplicate storage classes. The builder and default runtime base
@@ -123,3 +124,20 @@ current-head qualification and future ordinary acquisitions are distinct.
 Product refresh and graph authority remain separate release gates.
 
 This implementation, its tests and documentation were prepared with Codex assistance.
+
+## Batch2 heartbeat release (October 9, 2026)
+
+The `.3` release fixes completed chunks retaining live Quartz heartbeat jobs
+when the scheduler supplies a default group during registration. The cancellation
+key now uses the resolved group. It also lowers per-job interval/cron registration
+messages from INFO to DEBUG; active heartbeats, errors and progress remain intact.
+Both changed libraries are source-built and uniquely selected in the WAR. No
+classpath overlay, clinical JSON rewrite, index-definition change or schema
+migration is involved. Core must restart the old process to discard leaked
+in-memory triggers and verify that the same durable native reindex jobs resume.
+
+The Docker and CI builds run the full scheduler/Batch2 module suites plus eight
+real-scheduler contract checks. Packaging checks reject an official/custom
+version mix or duplicate scheduler and heartbeat classes. Core's disposable
+HTTP/PostgreSQL test additionally checks native reindex recovery after restart,
+absence of completed-chunk heartbeats and absence of INFO registration spam.
