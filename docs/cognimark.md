@@ -144,9 +144,9 @@ HTTP/PostgreSQL test also checks absence of completed-chunk heartbeats and INFO
 registration spam. The original small restart fixture covered a completed
 discovery gate, not loss of an already populated local broker queue.
 
-## Local Batch2 recovery candidate
+## Local Batch2 recovery
 
-The `.4` candidate restores dispatchability of lost local notifications through
+The `.4` release restores dispatchability of lost local notifications through
 the native persistence layer before schedulers start. Enable
 `cognimark.batch2.single-node-local-queue=true` **only** when deployment excludes
 overlapping HAPI processes against the same database. Core enforces a single
@@ -167,7 +167,16 @@ notifications and executing work at shutdown; the original job resumes with zero
 resource failures. A second restart does not replay completed jobs. A historical
 Condition missing its Patient target is repaired in the correct tenant, its
 subject search works, and exact historical resources remain unchanged. These are
-local candidate results, not acceptance of a production deployment.
+local regression results, not by themselves acceptance of a production deployment.
+
+Core accepted the source-pinned `.4` production replacement on October 9, 2026,
+after both AMD64 and emulated ARM64 images passed the expanded runtime test.
+Startup restored 21,457 unfinished notifications and resumed the original 28 BSC
+jobs without changing their parameters or sampled completed checkpoints. The
+reference lifecycle and original user's 843-note FHIR/KG check passed; product
+maintenance was disabled. Full BSC rebuild completion and the separate bounded
+historical-failure repair remain pending. Core's `docs/hapi-reindex.md` owns
+the deployment receipts and subsequent acceptance status.
 
 Maven compilation runs on `BUILDPLATFORM` rather than emulating the target CPU.
 The previous qualified AMD64/ARM64 packages contain the same 358 external library
