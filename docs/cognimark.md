@@ -1,9 +1,10 @@
 # Cognimark shared HAPI runtime
 
 Status, October 9, 2026: Core has deployed the source-built ARM64
-`cognimark.5` runtime, including long-ID storage, JSON XHTML preservation,
-native-work recovery and existing-reference prefetch. The `.6` incoming-reference candidate is in runtime and
-performance qualification. Core owns deployment and full-rebuild acceptance;
+`cognimark.6` runtime, including long-ID storage, JSON XHTML preservation,
+native-work recovery and bounded existing/incoming-reference prefetch. Both
+AMD64 and ARM64 packages passed full runtime qualification before replacement.
+Core owns deployment and full-rebuild acceptance;
 this branch does not deploy infrastructure itself.
 
 ## Source ownership
@@ -28,7 +29,7 @@ version `8.12.1-cognimark.1`, and the base/parser module uses
 `8.12.1-cognimark.2`. The scheduler and Batch2 modules use
 `8.12.1-cognimark.3`. Storage, search parameters, Batch2 jobs and the JPA server
 implementation use `8.12.1-cognimark.6`; other HAPI libraries use official 8.12.1.
-The starter candidate is versioned `8.12.1-cognimark.6`, not published under an upstream
+The starter is versioned `8.12.1-cognimark.6`, not published under an upstream
 artifact version. Maven dependency management selects the custom modules
 throughout the application dependency graph, and packaging tests reject mixed
 versions or duplicate storage classes. The builder and default runtime base
@@ -193,7 +194,7 @@ on rollback. Ordinary reference validation, placeholder creation, index definiti
 flush rules and optimistic locking remain enabled. An off-by-one existing-link
 ID comparison is also fixed. There is no new infrastructure, schema or cache service.
 
-The `.6` candidate also batches previously unresolved incoming relative targets
+The `.6` release also batches previously unresolved incoming relative targets
 within each reindex chunk. Parsed bodies are reused once, with version/history
 checks and write invalidation. Target identities are partition-keyed, positive-only,
 invalidated on writes/deletes, and discarded on rollback. Normal link validation
@@ -203,9 +204,12 @@ Known targets from that same resource's stored links are not redundantly queried
 No global cache, new resource-ID mapping, flush-mode or concurrency change is used.
 
 Docker and CI build the full search-parameter and Batch2-job test suites, selected
-JPA/recovery/prefetch tests and the standalone packaged contract. Core must still
-qualify full-WAR HTTP/PostgreSQL behavior, retained history, tenant isolation,
+JPA/recovery/prefetch tests and the standalone packaged contract. Core qualified
+full-WAR HTTP/PostgreSQL behavior, retained history, tenant isolation,
 restart recovery and paired performance before replacing the production image.
+Production `core-hapi:8` was accepted on October 9 at 15:48 UTC. Original native
+jobs and product records were preserved, authorized FHIR/KG reads agreed, and
+maintenance was disabled. Full BSC rebuilding remains a separate operation.
 
 The runtime-compatibility CI job uses the same digest-pinned Maven 3.9.12 / Java
 17 container as the Docker builder. It builds the model and storage modules
