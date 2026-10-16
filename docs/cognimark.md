@@ -1,11 +1,11 @@
 # Cognimark shared HAPI runtime
 
-Status, October 9, 2026: Core has deployed the source-built ARM64
-`cognimark.6` runtime, including long-ID storage, JSON XHTML preservation,
-native-work recovery and bounded existing/incoming-reference prefetch. Both
-AMD64 and ARM64 packages passed full runtime qualification before replacement.
-Core owns deployment and full-rebuild acceptance;
-this branch does not deploy infrastructure itself.
+Status, October 16, 2026: Core has deployed the source-built ARM64 `.7`
+starter with attachment extraction and a retained native full-text index.
+Full-text queries remain gated until native backfill coverage is accepted.
+The `.8` starter is under qualification with corrected partition-aware counts,
+full-text ordering, and pagination. Core owns infrastructure and activation;
+this branch does not deploy resources itself.
 
 ## Source ownership
 
@@ -14,6 +14,14 @@ this branch does not deploy infrastructure itself.
 | `cognimark/hapi-fhir` | The actual storage-library source changes and their tests |
 | `cognimark/hapi-fhir-jpaserver-starter` | Version-pinned library consumption, application packaging and runtime tests |
 | `cognimark/core-stack` | Infrastructure, explicit schema rollout, ingest/readback contracts and deployment |
+
+The starter adds attachment text extraction through HAPI's native full-text
+hook while retaining the existing storage, parser, partition, and recovery fixes. Plain text, HTML, XML, text-bearing PDF, and DOCX contribute to
+`_content`; Binary payloads are indexed without rewriting their stored bytes.
+External URLs are not fetched and image OCR is not included. Core owns the
+persistent index mount, native backfill jobs, and per-tenant/type readiness
+receipt. Full-text queries return `FHIR_INDEX_NOT_READY` until that receipt
+confirms complete coverage; ordinary structured reads remain available.
 
 The starter baseline is upstream tag `image/v8.12.0-1`, commit
 `a01027b91ed07f41194524fd0dd59623905cbe2d`. The core library baseline is upstream
@@ -24,12 +32,13 @@ updated to 8.12.1; it does not retain 8.12.0 libraries as a compatibility fallba
 Both forks use the development branch `cognimark/8.12.1-long-resource-ids`.
 
 The Dockerfile builds core fork revision
-`c33060c5a110981b0deba38553a6b4264183c2e5`. The model module uses
+`6c47cb6d99615060c5ecb8f8b63538775922ba75`. The model module uses
 version `8.12.1-cognimark.1`, and the base/parser module uses
 `8.12.1-cognimark.2`. The scheduler and Batch2 modules use
-`8.12.1-cognimark.3`. Storage, search parameters, Batch2 jobs and the JPA server
-implementation use `8.12.1-cognimark.6`; other HAPI libraries use official 8.12.1.
-The starter is versioned `8.12.1-cognimark.6`, not published under an upstream
+`8.12.1-cognimark.3`. Storage, search parameters and Batch2 jobs use `8.12.1-cognimark.6`. The JPA
+server implementation uses `8.12.1-cognimark.7`; other HAPI libraries use official
+8.12.1.
+The starter is versioned `8.12.1-cognimark.8`, not published under an upstream
 artifact version. Maven dependency management selects the custom modules
 throughout the application dependency graph, and packaging tests reject mixed
 versions or duplicate storage classes. The builder and default runtime base
