@@ -1,10 +1,11 @@
 # Cognimark shared HAPI runtime
 
-Status, October 16, 2026: Core has deployed the source-built ARM64 `.7`
-starter with attachment extraction and a retained native full-text index.
-Full-text queries remain gated until native backfill coverage is accepted.
-The `.8` starter is under qualification with corrected partition-aware counts,
-full-text ordering, and pagination. Core owns infrastructure and activation;
+Status, October 16, 2026: Core has deployed the source-built ARM64 `.8`
+starter with attachment extraction, a retained native full-text index, and
+corrected partition-aware counts, ordering, and pagination. The exact AMD64
+and ARM64 packages passed native query and persistence qualification.
+BSC backfill is running; each resource type becomes searchable only after its
+completed native job is accepted. Core owns infrastructure and coverage status;
 this branch does not deploy resources itself.
 
 ## Source ownership
