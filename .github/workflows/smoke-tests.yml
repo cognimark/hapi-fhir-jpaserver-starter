@@ -76,7 +76,7 @@ jobs:
           exit 1
 
       - name: Execute smoke tests
-        run: docker run --rm --network host -v "$PWD:/workdir" jetbrains/intellij-http-client -D src/test/smoketest/plain_server.http --env-file src/test/smoketest/http-client.env.json --env default
+        run: docker run --rm --network host -v "$PWD:/workdir" jetbrains/intellij-http-client src/test/smoketest/plain_server.http --env-file src/test/smoketest/http-client.env.json --env default
 
       - name: Show last server logs
         if: always()
