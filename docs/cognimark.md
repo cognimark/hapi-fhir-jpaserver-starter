@@ -1,11 +1,12 @@
 # Cognimark shared HAPI runtime
 
-Status, October 17, 2026: BSC's native backfill completed all 28 resource types
-and 8,428,875 resources. The deployed `.8` starter exposed a Hibernate Search
-missing-value sorting error during production query acceptance. The `.9`
-candidate pins the upstream patch; runtime upgrade qualification is in progress.
-Core owns infrastructure, deployment and coverage status; this branch does not
-deploy resources itself.
+Status, October 17, 2026: Core has deployed the `.9` starter as `core-hapi:11`.
+BSC's native backfill completed all 28 resource types and 8,428,875 resources.
+The runtime uses the existing index with the upstream Hibernate Search
+missing-value sort fix. AMD64 retained-index upgrade tests, ARM64 native query
+tests, and delegated Core attachment-query acceptance passed. Core owns
+infrastructure, deployment and coverage status; this branch does not deploy
+resources itself.
 
 ## Source ownership
 
