@@ -1,12 +1,11 @@
 # Cognimark shared HAPI runtime
 
-Status, October 16, 2026: Core has deployed the source-built ARM64 `.8`
-starter with attachment extraction, a retained native full-text index, and
-corrected partition-aware counts, ordering, and pagination. The exact AMD64
-and ARM64 packages passed native query and persistence qualification.
-BSC backfill is running; each resource type becomes searchable only after its
-completed native job is accepted. Core owns infrastructure and coverage status;
-this branch does not deploy resources itself.
+Status, October 17, 2026: BSC's native backfill completed all 28 resource types
+and 8,428,875 resources. The deployed `.8` starter exposed a Hibernate Search
+missing-value sorting error during production query acceptance. The `.9`
+candidate pins the upstream patch; runtime upgrade qualification is in progress.
+Core owns infrastructure, deployment and coverage status; this branch does not
+deploy resources itself.
 
 ## Source ownership
 
@@ -39,11 +38,19 @@ version `8.12.1-cognimark.1`, and the base/parser module uses
 `8.12.1-cognimark.3`. Storage, search parameters and Batch2 jobs use `8.12.1-cognimark.6`. The JPA
 server implementation uses `8.12.1-cognimark.7`; other HAPI libraries use official
 8.12.1.
-The starter is versioned `8.12.1-cognimark.8`, not published under an upstream
+The starter is versioned `8.12.1-cognimark.9`, not published under an upstream
 artifact version. Maven dependency management selects the custom modules
 throughout the application dependency graph, and packaging tests reject mixed
 versions or duplicate storage classes. The builder and default runtime base
 images are digest-pinned, and the OpenTelemetry agent download is SHA-256 checked.
+
+Hibernate Search is pinned to `7.2.6.Final`, including its engine, mapper and
+backends. It contains the upstream
+[missing-value sort fix](https://github.com/hibernate/hibernate-search/commit/d39a3838a830d2002463305d74966218c21519dc).
+Lucene remains `9.11.1`; the index schema and attachment extraction are unchanged.
+The packaging contract checks repeated reads of a missing nested sort value.
+Core's HTTP/PostgreSQL qualification can seed the database and index with a
+previous image, then validate the candidate against those retained files.
 
 The starter must build against an exact qualified core-fork revision. Do not
 use a floating branch at image-build time, duplicate the source patch in Core,

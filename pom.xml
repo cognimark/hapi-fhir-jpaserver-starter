@@ -10,7 +10,7 @@
         <cognimark.hapi.base.version>8.12.1-cognimark.2</cognimark.hapi.base.version>
         <cognimark.hapi.batch.version>8.12.1-cognimark.3</cognimark.hapi.batch.version>
         <cognimark.hapi.persistence.version>8.12.1-cognimark.7</cognimark.hapi.persistence.version>
-        <hapi.fhir.jpa.server.starter.revision>cognimark.8</hapi.fhir.jpa.server.starter.revision>
+        <hapi.fhir.jpa.server.starter.revision>cognimark.9</hapi.fhir.jpa.server.starter.revision>
         <clinical-reasoning.version>4.9.0</clinical-reasoning.version>
 
         <!-- Plugins Versions -->
@@ -27,6 +27,7 @@
         <spring_boot_version>3.5.15</spring_boot_version>
         <postgresql.version>42.7.12</postgresql.version>
         <logback_version>1.5.34</logback_version>
+        <hibernate_search_version>7.2.6.Final</hibernate_search_version>
     </properties>
 
     <!-- one-liner to take you to the cloud with settings form the application.yaml file: -->
