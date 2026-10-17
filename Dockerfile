@@ -12,10 +12,10 @@ RUN curl -fLSsO https://github.com/open-telemetry/opentelemetry-java-instrumenta
 # All non-custom HAPI dependencies are supplied by the official 8.12.1 release.
 RUN git init /tmp/cognimark-hapi-core \
     && git -C /tmp/cognimark-hapi-core remote add origin https://github.com/cognimark/hapi-fhir.git \
-    && git -C /tmp/cognimark-hapi-core fetch --depth 1 --filter=blob:none origin 6c47cb6d99615060c5ecb8f8b63538775922ba75 \
+    && git -C /tmp/cognimark-hapi-core fetch --depth 1 --filter=blob:none origin 564e33d89d1eb1aebbba36afd8f1485aa50c5037 \
     && git -C /tmp/cognimark-hapi-core sparse-checkout set hapi-deployable-pom hapi-fhir-base hapi-fhir-jpaserver-model hapi-fhir-storage hapi-fhir-jpa hapi-fhir-storage-batch2 hapi-fhir-storage-batch2-jobs hapi-fhir-jpaserver-searchparam hapi-fhir-jpaserver-base cognimark/narrative-tests cognimark/batch2-tests cognimark/reindex-tests \
     && git -C /tmp/cognimark-hapi-core checkout --detach FETCH_HEAD \
-    && test "$(git -C /tmp/cognimark-hapi-core rev-parse HEAD)" = 6c47cb6d99615060c5ecb8f8b63538775922ba75 \
+    && test "$(git -C /tmp/cognimark-hapi-core rev-parse HEAD)" = 564e33d89d1eb1aebbba36afd8f1485aa50c5037 \
     && mvn -B -ntp -f /tmp/cognimark-hapi-core/hapi-fhir-base/pom.xml install \
     && mvn -B -ntp -f /tmp/cognimark-hapi-core/cognimark/narrative-tests/pom.xml test \
     && mvn -B -ntp -f /tmp/cognimark-hapi-core/hapi-fhir-jpaserver-model/pom.xml -Dtest=ResourceTableTest install \
@@ -61,7 +61,7 @@ COPY --from=build-hapi --chown=65532:65532 /tmp/hapi-fhir-jpaserver-starter/open
 ########### distroless brings focus on security and runs on plain spring boot - this is the default image
 FROM gcr.io/distroless/java21-debian13:nonroot@sha256:0a1f5a75661918de9c0813f287f651c3bf2d6dd752eada5f084eb0c1f14ced9e AS default
 LABEL ai.cognimark.hapi.upstream-version="8.12.1" \
-      ai.cognimark.hapi.core-revision="6c47cb6d99615060c5ecb8f8b63538775922ba75" \
+      ai.cognimark.hapi.core-revision="564e33d89d1eb1aebbba36afd8f1485aa50c5037" \
       ai.cognimark.hapi.model-version="8.12.1-cognimark.1" \
       ai.cognimark.hapi.storage-version="8.12.1-cognimark.6" \
       ai.cognimark.hapi.parser-version="8.12.1-cognimark.2" \

@@ -7,16 +7,15 @@ on:
 
 jobs:
   format-check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    container:
+      image: docker.io/library/maven:3.9.12-eclipse-temurin-17@sha256:a0603aab698040d9c94259f379ec0487da1678560748d6c7508483034033c53d
     permissions:
       pull-requests: write
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
+      - uses: actions/checkout@v4
+      - name: Verify the build toolchain
+        run: mvn --version
       - name: spotless:check
         run: mvn spotless:check
       -  uses: mshick/add-pr-comment@v2

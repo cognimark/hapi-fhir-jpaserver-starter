@@ -6,7 +6,7 @@ runs:
     - uses: actions/checkout@v4
       with:
         repository: cognimark/hapi-fhir
-        ref: 6c47cb6d99615060c5ecb8f8b63538775922ba75
+        ref: 564e33d89d1eb1aebbba36afd8f1485aa50c5037
         path: .cognimark-hapi-core
     - name: Build and test storage contracts
       shell: bash

@@ -33,7 +33,7 @@ updated to 8.12.1; it does not retain 8.12.0 libraries as a compatibility fallba
 Both forks use the development branch `cognimark/8.12.1-long-resource-ids`.
 
 The Dockerfile builds core fork revision
-`6c47cb6d99615060c5ecb8f8b63538775922ba75`. The model module uses
+`564e33d89d1eb1aebbba36afd8f1485aa50c5037`. The model module uses
 version `8.12.1-cognimark.1`, and the base/parser module uses
 `8.12.1-cognimark.2`. The scheduler and Batch2 modules use
 `8.12.1-cognimark.3`. Storage, search parameters and Batch2 jobs use `8.12.1-cognimark.6`. The JPA
@@ -229,9 +229,15 @@ Production `core-hapi:8` was accepted on October 9 at 15:48 UTC. Original native
 jobs and product records were preserved, authorized FHIR/KG reads agreed, and
 maintenance was disabled. Full BSC rebuilding remains a separate operation.
 
-The runtime-compatibility CI job uses the same digest-pinned Maven 3.9.12 / Java
-17 container as the Docker builder. It builds the model and storage modules
-individually in the same order, rather than parsing the entire upstream reactor
-under the runner's ambient Maven installation. The initial `.5` remote check
-failed while parsing an upstream duplicate plugin declaration, not in a runtime
-test; the pinned image build and local package/runtime checks had passed.
+The runtime-compatibility and formatting CI jobs use the same digest-pinned
+Maven 3.9.12 / Java 17 container as the Docker builder. The host-based HTTP smoke
+job installs Maven 3.9.12 from its SHA-512-verified Apache distribution and uses
+Java 17, so its Docker client can reach the test server through host networking.
+The smoke job waits for the FHIR metadata endpoint before running its requests.
+All Cognimark build paths use the same pinned HAPI source revision.
+
+The October 17 build-only follow-up consolidates the JPA server's code-generation
+plugin declaration. All seven executions, five dependencies, and effective
+configuration are retained; the POM validates under Maven 3.9.12 and 3.10.0.
+This source/build configuration change does not replace the deployed runtime
+or rebuild clinical indexes.
