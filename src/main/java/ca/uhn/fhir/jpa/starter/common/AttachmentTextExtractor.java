@@ -1,9 +1,11 @@
 package ca.uhn.fhir.jpa.starter.common;
 
+import com.ibm.icu.text.CharsetDetector;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.zip.ZipInputStream;
@@ -50,15 +52,32 @@ public final class AttachmentTextExtractor {
         }
         if (media.getType().equalsIgnoreCase("text") || type.equals("application/json")
                 || type.endsWith("+json")) {
-            try {
-                return (media.getCharset() == null ? StandardCharsets.UTF_8 : media.getCharset())
-                        .newDecoder().decode(ByteBuffer.wrap(data)).toString();
-            } catch (CharacterCodingException exception) {
-                throw new IOException("Attachment text has invalid character encoding");
-            }
+            return text(data, media.getCharset(), media.getType().equalsIgnoreCase("text"));
         }
         // Image/OCR and opaque binary formats have no text extraction capability.
         return "";
+    }
+
+    private static String text(byte[] data, Charset declared, boolean detectEncoding) throws IOException {
+        Charset encoding = declared;
+        if (encoding == null) {
+            try {
+                return StandardCharsets.UTF_8.newDecoder().decode(ByteBuffer.wrap(data)).toString();
+            } catch (CharacterCodingException exception) {
+                // Undeclared text may use a different encoding. JSON remains UTF-8,
+                // and an explicit charset is never replaced by a detected one.
+                if (!detectEncoding) {
+                    throw new IOException("Attachment text has invalid character encoding");
+                }
+            }
+            var match = new CharsetDetector().setText(data).detect();
+            if (match == null) {
+                throw new IOException("Attachment text encoding could not be determined");
+            }
+            encoding = Charset.forName(match.getName());
+        }
+        // Never replace undecodable bytes with U+FFFD or drop them from the index.
+        return encoding.newDecoder().decode(ByteBuffer.wrap(data)).toString();
     }
 
     private static String markup(byte[] data, boolean xml, String charset) throws IOException {

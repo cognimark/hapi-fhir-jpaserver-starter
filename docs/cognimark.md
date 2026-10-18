@@ -1,12 +1,19 @@
 # Cognimark shared HAPI runtime
 
-Status, October 17, 2026: Core has deployed the `.9` starter as `core-hapi:11`.
+Status, October 18, 2026: Core has deployed the `.11` starter as `core-hapi:14`.
 BSC's native backfill completed all 28 resource types and 8,428,875 resources.
 The runtime uses the existing index with the upstream Hibernate Search
 missing-value sort fix. AMD64 retained-index upgrade tests, ARM64 native query
-tests, and delegated Core attachment-query acceptance passed. Core owns
+tests, and delegated Core attachment-query acceptance passed. The `.10` charset
+fix preserves the existing index and original attachments; six datasource
+full-text count checks and twelve resource hash/version checks passed after
+deployment. The triggering 7,496-resource HADV input completed successfully,
+and its original attachment bytes matched a native GET. Core owns
 infrastructure, deployment and coverage status; this branch does not deploy
 resources itself.
+
+Starter `.11` includes patient `$everything` coverage and filter fixes. It passed
+isolated Core/HAPI qualification and live patient-chart acceptance.
 
 ## Source ownership
 
@@ -24,6 +31,14 @@ persistent index mount, native backfill jobs, and per-tenant/type readiness
 receipt. Full-text queries return `FHIR_INDEX_NOT_READY` until that receipt
 confirms complete coverage; ordinary structured reads remain available.
 
+Text attachments with a declared charset are decoded strictly using that
+charset. Undeclared text is decoded as UTF-8 first; if that fails, ICU detects
+an encoding and a strict decoder reads the bytes. This supports source documents
+containing Latin-1 or Windows-1252 characters without altering the stored
+attachment or replacing undecodable bytes. Detection is heuristic; JSON without
+a declared charset remains UTF-8, and HTML/XML retain their document-aware
+parsers. The same extractor runs during writes and native reindex.
+
 The starter baseline is upstream tag `image/v8.12.0-1`, commit
 `a01027b91ed07f41194524fd0dd59623905cbe2d`. The core library baseline is upstream
 `v8.12.1`, commit `c8cc1dbbb2568610b68de626ea00c21080e0b8f8`.
@@ -33,13 +48,13 @@ updated to 8.12.1; it does not retain 8.12.0 libraries as a compatibility fallba
 Both forks use the development branch `cognimark/8.12.1-long-resource-ids`.
 
 The Dockerfile builds core fork revision
-`564e33d89d1eb1aebbba36afd8f1485aa50c5037`. The model module uses
+`de5195d93fdeba10c97c07900ac6ed73d5444099`. The model module uses
 version `8.12.1-cognimark.1`, and the base/parser module uses
 `8.12.1-cognimark.2`. The scheduler and Batch2 modules use
 `8.12.1-cognimark.3`. Storage, search parameters and Batch2 jobs use `8.12.1-cognimark.6`. The JPA
-server implementation uses `8.12.1-cognimark.7`; other HAPI libraries use official
+server implementation uses `8.12.1-cognimark.8`; other HAPI libraries use official
 8.12.1.
-The starter is versioned `8.12.1-cognimark.9`, not published under an upstream
+The starter is versioned `8.12.1-cognimark.11`, not published under an upstream
 artifact version. Maven dependency management selects the custom modules
 throughout the application dependency graph, and packaging tests reject mixed
 versions or duplicate storage classes. The builder and default runtime base
@@ -48,7 +63,7 @@ images are digest-pinned, and the OpenTelemetry agent download is SHA-256 checke
 Hibernate Search is pinned to `7.2.6.Final`, including its engine, mapper and
 backends. It contains the upstream
 [missing-value sort fix](https://github.com/hibernate/hibernate-search/commit/d39a3838a830d2002463305d74966218c21519dc).
-Lucene remains `9.11.1`; the index schema and attachment extraction are unchanged.
+Lucene remains `9.11.1`; the index schema is unchanged.
 The packaging contract checks repeated reads of a missing nested sort value.
 Core's HTTP/PostgreSQL qualification can seed the database and index with a
 previous image, then validate the candidate against those retained files.
@@ -75,6 +90,22 @@ on its merits. Core remains the only owner of AWS runtime resources. Never
 commit deployment secrets, private source inventories or patient fixtures here.
 
 ## Qualification
+
+The `.11` patient operation passes four disposable Core/HAPI/PostgreSQL tests:
+complete native pagination, Group/List and requested-type reference traversal,
+patient isolation, inline attachment preservation, and `_lastUpdated` filtering.
+Attachment URLs are returned as locators; their bytes require a separate read.
+The provider advertises only supported parameters. The starter's 16 selected
+package/extraction tests and the fork's search-builder tests also pass. Core owns
+the native qualification in `tests/test_hapi_everything_docker.py`.
+
+The `.10` encoding fix passes all 16 selected starter/package tests, including
+ten attachment extraction cases. Core's disposable PostgreSQL/HAPI full-text
+test passes in 193.77 seconds: encoded attachment backfill, transaction create
+and update, original-byte preservation, search result replacement, tenant
+isolation, structured filtering, pagination and retained-index restart. The
+triggering production attachment was also decoded privately with zero replacement
+characters and an exact byte round trip; no patient fixture is stored here.
 
 Follow the [core-fork release gates](https://github.com/cognimark/hapi-fhir/blob/cognimark/8.12.1-long-resource-ids/cognimark/README.md).
 The prior disposable class-overlay experiment is evidence for the design, not

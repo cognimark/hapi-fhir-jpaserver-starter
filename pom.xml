@@ -9,8 +9,8 @@
         <cognimark.hapi.storage.version>8.12.1-cognimark.6</cognimark.hapi.storage.version>
         <cognimark.hapi.base.version>8.12.1-cognimark.2</cognimark.hapi.base.version>
         <cognimark.hapi.batch.version>8.12.1-cognimark.3</cognimark.hapi.batch.version>
-        <cognimark.hapi.persistence.version>8.12.1-cognimark.7</cognimark.hapi.persistence.version>
-        <hapi.fhir.jpa.server.starter.revision>cognimark.9</hapi.fhir.jpa.server.starter.revision>
+        <cognimark.hapi.persistence.version>8.12.1-cognimark.8</cognimark.hapi.persistence.version>
+        <hapi.fhir.jpa.server.starter.revision>cognimark.11</hapi.fhir.jpa.server.starter.revision>
         <clinical-reasoning.version>4.9.0</clinical-reasoning.version>
 
         <!-- Plugins Versions -->
@@ -118,6 +118,11 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>com.ibm.icu</groupId>
+            <artifactId>icu4j</artifactId>
+            <version>78.1</version>
+        </dependency>
 
         <dependency>
             <groupId>org.jsoup</groupId>

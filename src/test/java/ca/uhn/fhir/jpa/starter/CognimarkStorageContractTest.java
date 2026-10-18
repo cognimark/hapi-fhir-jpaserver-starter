@@ -33,7 +33,7 @@ class CognimarkStorageContractTest {
         assertVersion("hapi-fhir-storage", "8.12.1-cognimark.6");
         assertVersion("hapi-fhir-jpa", "8.12.1-cognimark.3");
         assertVersion("hapi-fhir-storage-batch2", "8.12.1-cognimark.3");
-        assertVersion("hapi-fhir-jpaserver-base", "8.12.1-cognimark.7");
+        assertVersion("hapi-fhir-jpaserver-base", "8.12.1-cognimark.8");
         assertVersion("hapi-fhir-jpaserver-searchparam", "8.12.1-cognimark.6");
         assertVersion("hapi-fhir-storage-batch2-jobs", "8.12.1-cognimark.6");
         assertThat(Collections.list(getClass().getClassLoader().getResources(

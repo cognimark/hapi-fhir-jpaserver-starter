@@ -11,6 +11,7 @@ import ca.uhn.fhir.jpa.starter.common.AttachmentFullTextInterceptor;
 import ca.uhn.fhir.jpa.starter.common.AttachmentTextExtractor;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -22,6 +23,8 @@ import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.hl7.fhir.r4.model.Binary;
 import org.hl7.fhir.r4.model.DocumentReference;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class AttachmentFullTextTest {
     private final FhirContext context = FhirContext.forR4Cached();
@@ -78,13 +81,43 @@ class AttachmentFullTextTest {
     }
 
     @Test
-    void binaryTextIsDecodedAndCorruptSupportedContentFailsIndexing() {
+    void binaryTextIsDecodedAndInvalidDeclaredEncodingFailsIndexing() {
         var binary = new Binary().setContentType("text/plain").setData("Morning OFF".getBytes(StandardCharsets.UTF_8));
         var request = new FullTextExtractionRequest(binary.getIdElement(), binary, "Binary", () -> "");
         assertThat(interceptor.extract(request).getPayload()).contains("Morning OFF");
-        binary.setData(new byte[] {(byte) 0xff});
+        binary.setContentType("text/plain; charset=UTF-8").setData(new byte[] {(byte) 0xff});
         assertThatThrownBy(() -> interceptor.extract(request)).isInstanceOf(UnprocessableEntityException.class)
                 .hasMessageContaining("FHIR_TEXT_EXTRACTION_FAILED");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"ISO-8859-1", "windows-1252", "UTF-16", "UTF-8"})
+    void undeclaredTextEncodingIsDetectedWithoutChangingOriginalAttachment(String encoding) {
+        String text = ("The document contains a nonbreaking\u00a0space between these words. "
+                + "The original attachment is preserved and its complete text is searchable. ").repeat(5);
+        if (encoding.equals("windows-1252")) {
+            text += "The author\u2019s \u201cquoted statement\u201d is also searchable.";
+        }
+        var resource = new DocumentReference();
+        resource.setId("DocumentReference/encoded-text");
+        resource.addContent().getAttachment().setContentType("text/plain")
+                .setData(text.getBytes(Charset.forName(encoding)));
+        String before = context.newJsonParser().encodeResourceToString(resource);
+        String payload = interceptor.extract(new FullTextExtractionRequest(
+                resource.getIdElement(), resource, "DocumentReference", () -> "native text")).getPayload();
+        assertThat(payload).contains(text).doesNotContain("\ufffd");
+        assertThat(context.newJsonParser().encodeResourceToString(resource)).isEqualTo(before);
+    }
+
+    @Test
+    void declaredCharsetIsHonoredAndJsonRequiresUtf8() throws Exception {
+        byte[] bytes = "A nonbreaking\u00a0space".getBytes(StandardCharsets.ISO_8859_1);
+        assertThat(AttachmentTextExtractor.extract(bytes, "text/plain; charset=ISO-8859-1"))
+                .isEqualTo("A nonbreaking\u00a0space");
+        assertThatThrownBy(() -> AttachmentTextExtractor.extract(bytes, "text/plain; charset=UTF-8"))
+                .isInstanceOf(java.io.IOException.class);
+        assertThatThrownBy(() -> AttachmentTextExtractor.extract(bytes, "application/json"))
+                .isInstanceOf(java.io.IOException.class);
     }
 
     @Test
